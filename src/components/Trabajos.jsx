@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
-const API = 'http://localhost:3000'
+const API = 'https://copiado-libros-backend-production.up.railway.app'
 
 function Trabajos() {
   const [trabajos, setTrabajos] = useState([])

@@ -8,5 +8,3 @@ createRoot(document.getElementById('root')).render(
     <App />
   </StrictMode>,
 )
-node_modules
-.env
