@@ -9,6 +9,7 @@ function Clientes() {
   const [clientes, setClientes] = useState([])
   const [nombre, setNombre] = useState('')
   const [cuit, setCuit] = useState('')
+  const [telefono, setTelefono] = useState('')
 
   useEffect(() => {
     cargarClientes()
@@ -24,9 +25,10 @@ function Clientes() {
       alert('Completá todos los campos')
       return
     }
-    await axios.post(`${API}/clientes/`, { nombre, cuit }, getConfig())
+    await axios.post(`${API}/clientes/`, { nombre, cuit, telefono }, getConfig())
     setNombre('')
     setCuit('')
+    setTelefono('')
     cargarClientes()
   }
 
@@ -51,6 +53,11 @@ function Clientes() {
           value={cuit}
           onChange={e => setCuit(e.target.value)}
         />
+        <input
+          placeholder="Teléfono"
+          value={telefono}
+          onChange={e => setTelefono(e.target.value)}
+        />
         <button onClick={agregarCliente}>Agregar</button>
       </div>
 
@@ -60,6 +67,7 @@ function Clientes() {
             <th>ID</th>
             <th>Nombre</th>
             <th>CUIT</th>
+            <th>Teléfono</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -69,6 +77,7 @@ function Clientes() {
               <td>{c.id}</td>
               <td>{c.nombre}</td>
               <td>{c.cuit}</td>
+              <td>{c.telefono}</td>
               <td>
                 <button onClick={() => eliminarCliente(c.id)}>Eliminar</button>
               </td>
