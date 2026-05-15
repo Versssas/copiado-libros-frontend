@@ -98,6 +98,12 @@ function Trabajos() {
     t.cliente_nombre.toLowerCase().includes(busqueda.toLowerCase())
   )
 
+  const enviarWhatsApp = (trabajo) => {
+    const mensaje = `Hola, su trabajo de ${trabajo.hojas} hojas está listo. Total: ${formatearDinero(trabajo.total)}. Necesitas factura A o B?`
+    const telefono = trabajo.cliente_telefono?.replace(/\D/g, '')
+    window.open(`https://wa.me/54${telefono}?text=${encodeURIComponent(mensaje)}`, '_blank')
+}
+
   return (
     <div>
       <h2>Trabajos</h2>
