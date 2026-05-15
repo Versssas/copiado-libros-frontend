@@ -15,7 +15,7 @@ function Clientes() {
   }, [])
 
   const cargarClientes = async () => {
-    const res = await axios.get(`${API}/clientes/`)
+    const res = await axios.get(`${API}/clientes/`, getConfig())
     setClientes(res.data)
   }
 
@@ -24,7 +24,7 @@ function Clientes() {
       alert('Completá todos los campos')
       return
     }
-    await axios.post(`${API}/clientes/`, { nombre, cuit })
+    await axios.post(`${API}/clientes/`, { nombre, cuit }, getConfig())
     setNombre('')
     setCuit('')
     cargarClientes()
@@ -32,7 +32,7 @@ function Clientes() {
 
   const eliminarCliente = async (id) => {
     if (!confirm('¿Seguro que querés eliminar este cliente?')) return
-    await axios.delete(`${API}/clientes/${id}`)
+    await axios.delete(`${API}/clientes/${id}`, getConfig())
     cargarClientes()
   }
 
