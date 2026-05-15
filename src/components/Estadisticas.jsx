@@ -49,11 +49,22 @@ function Estadisticas() {
     .filter(t => t.estado !== 'Cobrado')
     .reduce((acc, t) => acc + Number(t.total), 0)
 
-  return (
+  const porCliente = trabajos.reduce((acc, t) => {
+    const nombre = t.cliente_nombre
+    if (!acc[nombre]) acc[nombre] = { cantidad: 0, cobrado : 0, pendiente: 0}
+    acc[nombre].cantidad += 1
+    if (t.estado === 'Cobrado') {
+      acc[nombre].cobrado += Number(t.total)
+    } else {
+      acc[nombre].pendiente += Number(t.total)
+    }
+    return acc
+    }, {})
+
+    return (
     <div>
       <h2>Estadísticas</h2>
 
-      {/* Cobrado vs Pendiente */}
       <div className="stats-cards">
         <div className="stat-card verde">
           <h3>Total Cobrado</h3>
@@ -68,51 +79,71 @@ function Estadisticas() {
           <p>{formatearDinero(cobrado + pendiente)}</p>
         </div>
       </div>
-    <div className="stats-tables">
-      {/* Por estado */}
-      <h3 className="subtitulo">Trabajos por Estado</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Estado</th>
-            <th>Cantidad</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.entries(porEstado).map(([estado, datos]) => (
-            <tr key={estado}>
-              <td>{estado}</td>
-              <td>{datos.cantidad}</td>
-              <td>{formatearDinero(datos.total)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
 
-      {/* Por mes */}
-      <h3 className="subtitulo">Facturación por Mes</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Mes</th>
-            <th>Cantidad</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.entries(porMes).map(([mes, datos]) => (
-            <tr key={mes}>
-              <td>{mes}</td>
-              <td>{datos.cantidad}</td>
-              <td>{formatearDinero(datos.total)}</td>
+      <div className="stats-tables">
+        <h3 className="subtitulo">Trabajos por Estado</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Estado</th>
+              <th>Cantidad</th>
+              <th>Total</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {Object.entries(porEstado).map(([estado, datos]) => (
+              <tr key={estado}>
+                <td>{estado}</td>
+                <td>{datos.cantidad}</td>
+                <td>{formatearDinero(datos.total)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <h3 className="subtitulo">Facturación por Mes</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Mes</th>
+              <th>Cantidad</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.entries(porMes).map(([mes, datos]) => (
+              <tr key={mes}>
+                <td>{mes}</td>
+                <td>{datos.cantidad}</td>
+                <td>{formatearDinero(datos.total)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <h3 className="subtitulo">Por Cliente</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Cantidad de trabajos</th>
+              <th>Cobrado</th>
+              <th>A Cobrar</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.entries(porCliente).map(([nombre, datos]) => (
+              <tr key={nombre}>
+                <td>{nombre}</td>
+                <td>{datos.cantidad}</td>
+                <td>{formatearDinero(datos.cobrado)}</td>
+                <td>{formatearDinero(datos.pendiente)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
-    </div>      
   )
 }
-
 export default Estadisticas
