@@ -3,7 +3,7 @@ import Clientes from './components/Clientes'
 import Trabajos from './components/Trabajos'
 import Login from './components/Login'
 import './App.css'
-
+import Estadisticas from './components/Estadisticas'
 function App() {
   const [pagina, setPagina] = useState('trabajos')
   const [logueado, setLogueado] = useState(() => {
@@ -31,6 +31,7 @@ function App() {
         <div>
           <button onClick={() => setPagina('trabajos')}>Trabajos</button>
           <button onClick={() => setPagina('clientes')}>Clientes</button>
+          <button onClick={() => setPagina('estadisticas')}>Estadísticas</button>
           <button onClick={handleLogout}>Salir</button>
         </div>
       </nav>
@@ -38,6 +39,7 @@ function App() {
       <main>
         {pagina === 'trabajos' && <Trabajos />}
         {pagina === 'clientes' && <Clientes />}
+        {pagina === 'estadisticas' && <Estadisticas />}
       </main>
     </div>
   )
