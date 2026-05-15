@@ -317,4 +317,5 @@ th:last-child, td:last-child {
   margin: 24px 0 12px 0;
   border: none;
   padding: 0;
+  text-align: center;
 }
