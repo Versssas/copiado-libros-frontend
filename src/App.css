@@ -336,3 +336,56 @@ button.editar {
   transition: background 0.2s;
   margin-right: 6px;
 }
+
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  nav h1 {
+    font-size: 16px;
+  }
+
+  nav button {
+    padding: 6px 12px;
+    font-size: 12px;
+    margin-left: 4px;
+  }
+
+  main {
+    padding: 16px;
+  }
+
+  .stats-cards {
+    flex-direction: column;
+  }
+
+  .form-row {
+    flex-direction: column;
+  }
+
+  .form-card {
+    padding: 12px;
+  }
+
+  input, select {
+    width: 100%;
+  }
+
+  input[name="hojas"],
+  input[name="precio_hoja"] {
+    width: 100%;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  button.agregar, button.editar, button.eliminar {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
