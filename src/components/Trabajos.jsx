@@ -25,6 +25,7 @@ function Trabajos() {
     precio_hoja: '',
     estado: ''
   })
+  const [busqueda, setBusqueda] = useState('')
 
   useEffect(() => {
     cargarTrabajos()
@@ -93,10 +94,20 @@ function Trabajos() {
     setFormEditar({ ...formEditar, [e.target.name]: e.target.value })
   }
 
+  const trabajosFiltrados = trabajos.filter(t => 
+    t.cliente_nombre.toLowerCase().includes(busqueda.toLowerCase())
+  )
+
   return (
     <div>
       <h2>Trabajos</h2>
-
+      <input
+        type="text"
+        placeholder="Buscar por cliente..."
+        value={busqueda}
+        onChange={e => setBusqueda(e.target.value)}
+        style={{ marginBottom: '16px', width: '250px' }}
+      />
       <div className="form-card">
         <div className="form-row">
             <select name="cliente_id" value={form.cliente_id} onChange={handleChange}>
@@ -134,7 +145,7 @@ function Trabajos() {
           </tr>
         </thead>
         <tbody>
-    {trabajos.map(t => (
+    {trabajosFiltrados.map(t => (
         <tr key={t.id}>
             {editando === t.id ? (
                 <>
