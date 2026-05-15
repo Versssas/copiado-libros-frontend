@@ -319,3 +319,8 @@ th:last-child, td:last-child {
   padding: 0;
   text-align: center;
 }
+
+.stats-tables table {
+  width: 100%;
+  margin-bottom: 32px;
+}

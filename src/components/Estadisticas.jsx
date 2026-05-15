@@ -68,7 +68,7 @@ function Estadisticas() {
           <p>{formatearDinero(cobrado + pendiente)}</p>
         </div>
       </div>
-
+    <div className="stats-tables">
       {/* Por estado */}
       <h3 className="subtitulo">Trabajos por Estado</h3>
       <table>
@@ -111,6 +111,7 @@ function Estadisticas() {
         </tbody>
       </table>
     </div>
+    </div>      
   )
 }
 
