@@ -6,7 +6,10 @@ import './App.css'
 
 function App() {
   const [pagina, setPagina] = useState('trabajos')
-  const [logueado, setLogueado] = useState(!!localStorage.getItem('token'))
+  const [logueado, setLogueado] = useState(() => {
+    const token = localStorage.getItem('token')
+    return !!token
+  })
 
   const handleLogin = () => {
     setLogueado(true)
