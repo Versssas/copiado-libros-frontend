@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 const API = 'https://copiado-libros-backend-production.up.railway.app'
-
+const getConfig = () => ({
+    headers: { authorization: localStorage.getItem('token') }
+})
 function Trabajos() {
   const [trabajos, setTrabajos] = useState([])
   const [clientes, setClientes] = useState([])
@@ -14,6 +16,15 @@ function Trabajos() {
     precio_hoja: '',
     estado: 'Pendiente'
   })
+  const [editando, setEditando] = useState(null)
+  const [formEditar, setFormEditar] = useState({
+    cliente_id: '',
+    fecha: '',
+    fecha_entrega: '',
+    hojas: '',
+    precio_hoja: '',
+    estado: ''
+  })
 
   useEffect(() => {
     cargarTrabajos()
@@ -21,12 +32,12 @@ function Trabajos() {
   }, [])
 
   const cargarTrabajos = async () => {
-    const res = await axios.get(`${API}/trabajos/`)
+    const res = await axios.get(`${API}/trabajos/`, getConfig())
     setTrabajos(res.data)
   }
 
   const cargarClientes = async () => {
-    const res = await axios.get(`${API}/clientes/`)
+    const res = await axios.get(`${API}/clientes/`, getConfig())
     setClientes(res.data)
   }
 
@@ -40,56 +51,47 @@ function Trabajos() {
       return
     }
     const total = form.hojas * form.precio_hoja
-    await axios.post(`${API}/trabajos/`, { ...form, total })
+    await axios.post(`${API}/trabajos/`, { ...form, total }, getConfig())
     setForm({ cliente_id: '', fecha: '', fecha_entrega: '', hojas: '', precio_hoja: '', estado: 'Pendiente' })
     cargarTrabajos()
   }
 
   const eliminarTrabajo = async (id) => {
     if (!confirm('¿Seguro que querés eliminar este trabajo?')) return
-    await axios.delete(`${API}/trabajos/${id}`)
+    await axios.delete(`${API}/trabajos/${id}`, getConfig())
     cargarTrabajos()
   }
 
   const formatearFecha = (fecha) => {
     return new Date(fecha).toLocaleDateString()
-    }
+  }
 
-const formatearDinero = (monto) => {
+  const formatearDinero = (monto) => {
     return '$' + Number(monto).toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
-}
-const [editando, setEditando] = useState(null)
-const [formEditar, setFormEditar] = useState({
-    cliente_id: '',
-    fecha: '',
-    fecha_entrega: '',
-    hojas: '',
-    precio_hoja: '',
-    estado: ''
-})
+  }
 
-const empezarEdicion = (trabajo) => {
+  const empezarEdicion = (trabajo) => {
     setEditando(trabajo.id)
     setFormEditar({
-        cliente_id: trabajo.cliente_id,
-        fecha: trabajo.fecha.split('T')[0],
-        fecha_entrega: trabajo.fecha_entrega.split('T')[0],
-        hojas: trabajo.hojas,
-        precio_hoja: trabajo.precio_hoja,
-        estado: trabajo.estado
+      cliente_id: trabajo.cliente_id,
+      fecha: trabajo.fecha.split('T')[0],
+      fecha_entrega: trabajo.fecha_entrega.split('T')[0],
+      hojas: trabajo.hojas,
+      precio_hoja: trabajo.precio_hoja,
+      estado: trabajo.estado
     })
-}
+  }
 
-const guardarEdicion = async () => {
+  const guardarEdicion = async () => {
     const total = formEditar.hojas * formEditar.precio_hoja
-    await axios.put(`${API}/trabajos/${editando}`, { ...formEditar, total })
+    await axios.put(`${API}/trabajos/${editando}`, { ...formEditar, total }, getConfig())
     setEditando(null)
     cargarTrabajos()
-}
+  }
 
-const handleChangeEditar = (e) => {
+  const handleChangeEditar = (e) => {
     setFormEditar({ ...formEditar, [e.target.name]: e.target.value })
-}
+  }
 
   return (
     <div>

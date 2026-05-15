@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 const API = 'https://copiado-libros-backend-production.up.railway.app'
-
+const getConfig = () => ({
+    headers: { authorization: localStorage.getItem('token') }
+})
 function Clientes() {
   const [clientes, setClientes] = useState([])
   const [nombre, setNombre] = useState('')
