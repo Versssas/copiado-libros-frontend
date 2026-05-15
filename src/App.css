@@ -324,3 +324,15 @@ th:last-child, td:last-child {
   width: 100%;
   margin-bottom: 32px;
 }
+
+button.editar {
+  background: #c0392b;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.2s;
+  margin-right: 6px;
+}
