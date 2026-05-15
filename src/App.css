@@ -389,3 +389,17 @@ button.editar {
     font-size: 12px;
   }
 }
+button.whatsapp {
+  background: #25d366;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  margin-right: 6px;
+}
+
+button.whatsapp:hover {
+  background: #1da851;
+}
