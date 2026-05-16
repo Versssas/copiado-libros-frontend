@@ -102,7 +102,6 @@ function Clientes() {
                   <td>{c.cuit}</td>
                   <td>{c.telefono}</td>
                   <td>
-                    <button type="button" className="whatsapp" onClick={() => enviarWhatsApp(t)}>WhatsApp</button>
                     <button type="button" className="editar" onClick={() => empezarEdicion(c)}>Editar</button>
                     <button type="button" className="eliminar" onClick={() => eliminarCliente(c.id)}>Eliminar</button>
                   </td>
