@@ -192,8 +192,9 @@ function Trabajos() {
                     <td>{formatearDinero(t.total)}</td>
                     <td>{t.estado}</td>
                     <td>
-                        <button className="agregar" onClick={() => empezarEdicion(t)}>Editar</button>
-                        <button className="eliminar" onClick={() => eliminarTrabajo(t.id)}>Eliminar</button>
+                        <button type="button" className="whatsapp" onClick={() => enviarWhatsApp(t)}>WhatsApp</button>
+                        <button type="button" className="editar" onClick={() => empezarEdicion(t)}>Editar</button>
+                        <button type="button" className="eliminar" onClick={() => eliminarTrabajo(t.id)}>Eliminar</button>
                     </td>
                 </>
             )}
