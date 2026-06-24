@@ -14,7 +14,8 @@ function Trabajos() {
     fecha_entrega: '',
     hojas: '',
     precio_hoja: '',
-    estado: 'Pendiente'
+    estado: 'Pendiente',
+    iva: false
   })
   const [editando, setEditando] = useState(null)
   const [formEditar, setFormEditar] = useState({
@@ -132,6 +133,15 @@ function Trabajos() {
             <option>Entregado</option>
             <option>Cobrado</option>
             </select>
+            <label style={{ display: 'flex' , alignItems: 'center', gap: '6px' }}>
+              <input
+                type="checkbox"
+                name="iva"
+                checked={form.iva}
+                onChange={e => setForm({ ...form, iva: e.target.checked })}
+              />
+              IVA 21% 
+            </label>
         </div>
         <button className="agregar" onClick={agregarTrabajo}>Agregar</button>
         </div>
@@ -176,6 +186,7 @@ function Trabajos() {
                             <option>Cobrado</option>
                         </select>
                     </td>
+                  
                     <td>
                         <button className="agregar" onClick={guardarEdicion}>Guardar</button>
                         <button className="eliminar" onClick={() => setEditando(null)}>Cancelar</button>
