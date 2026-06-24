@@ -160,8 +160,8 @@ function Trabajos() {
             <th>F. Entrega</th>
             <th>Hojas</th>
             <th>Precio</th>
+            <th>IVA</th>
             <th>Total</th>
-            <th>Total c/IVA</th>
             <th>Estado</th>
             <th>Acciones</th>
           </tr>
