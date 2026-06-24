@@ -63,7 +63,7 @@ function Trabajos() {
     cargarTrabajos()
   }
 
-    const formatearFecha = (fecha) => {
+  const formatearFecha = (fecha) => {
     const [year, month, day] = fecha.split('T')[0].split('-')
     return `${day}/${month}/${year}`
   }

@@ -26,11 +26,12 @@ function Estadisticas() {
   // Totales por mes
   const porMes = trabajos.reduce((acc, t) => {
     const mes = new Date(t.fecha).toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })
-    if (!acc[mes]) acc[mes] = { total: 0, cantidad: 0 }
+    if (!acc[mes]) acc[mes] = { total: 0, cantidad: 0, hojas: 0 }
     acc[mes].total += Number(t.total)
     acc[mes].cantidad += 1
+    acc[mes].hojas += Number(t.hojas)
     return acc
-  }, {})
+}, {})
 
   // Por estado
   const porEstado = trabajos.reduce((acc, t) => {
@@ -107,6 +108,7 @@ function Estadisticas() {
             <tr>
               <th>Mes</th>
               <th>Cantidad</th>
+              <th>Hojas</th>
               <th>Total</th>
             </tr>
           </thead>
@@ -115,6 +117,7 @@ function Estadisticas() {
               <tr key={mes}>
                 <td>{mes}</td>
                 <td>{datos.cantidad}</td>
+                <td>{datos.hojas}</td>
                 <td>{formatearDinero(datos.total)}</td>
               </tr>
             ))}
