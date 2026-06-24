@@ -216,7 +216,17 @@ function Trabajos() {
                   <td>{formatearFecha(t.fecha_entrega)}</td>
                   <td>{t.hojas}</td>
                   <td>{formatearDinero(t.precio_hoja)}</td>
-                  <td>{t.iva ? 'Sí' : 'No'}</td>
+                  <td>
+                      <span style={{
+                          background: t.iva ? '#27ae60' : '#ddd',
+                          color: t.iva ? 'white' : '#666',
+                          padding: '2px 10px',
+                          borderRadius: '12px',
+                          fontSize: '12px'
+                      }}>
+                          {t.iva ? 'Sí' : 'No'}
+                      </span>
+                  </td>
                   <td>{t.iva && t.total_con_iva ? formatearDinero(t.total_con_iva) : formatearDinero(t.total)}</td>
                   <td>{t.estado}</td>
                   <td>
