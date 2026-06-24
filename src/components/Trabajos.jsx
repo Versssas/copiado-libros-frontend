@@ -216,8 +216,8 @@ function Trabajos() {
                   <td>{formatearFecha(t.fecha_entrega)}</td>
                   <td>{t.hojas}</td>
                   <td>{formatearDinero(t.precio_hoja)}</td>
-                  <td>{formatearDinero(t.total)}</td>
-                  <td>{t.iva && t.total_con_iva ? formatearDinero(t.total_con_iva) : '-'}</td>
+                  <td>{t.iva ? 'Sí' : 'No'}</td>
+                  <td>{t.iva && t.total_con_iva ? formatearDinero(t.total_con_iva) : formatearDinero(t.total)}</td>
                   <td>{t.estado}</td>
                   <td>
                     <button type="button" className="whatsapp" onClick={() => enviarWhatsApp(t)}>WhatsApp</button>
