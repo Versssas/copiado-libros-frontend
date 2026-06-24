@@ -63,10 +63,10 @@ function Trabajos() {
     cargarTrabajos()
   }
 
-  const formatearFecha = (fecha) => {
-    return new Date(fecha).toLocaleDateString()
+    const formatearFecha = (fecha) => {
+    const [year, month, day] = fecha.split('T')[0].split('-')
+    return `${day}/${month}/${year}`
   }
-
   const formatearDinero = (monto) => {
     return '$' + Number(monto).toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
   }
