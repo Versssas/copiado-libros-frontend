@@ -156,6 +156,7 @@ function Trabajos() {
             <th>Hojas</th>
             <th>Precio</th>
             <th>Total</th>
+            <th>Total c/IVA</th>
             <th>Estado</th>
             <th>Acciones</th>
           </tr>
@@ -186,7 +187,17 @@ function Trabajos() {
                             <option>Cobrado</option>
                         </select>
                     </td>
-                  
+                    <td>
+                        <label style={{ display: 'flex' , alignItems: 'center', gap: '6px' }}>
+                          <input
+                            type="checkbox"
+                            name="iva"
+                            checked={formEditar.iva}
+                            onChange={e => setFormEditar({ ...formEditar, iva: e.target.checked })}
+                          />
+                          IVA 21% 
+                        </label>
+                    </td>
                     <td>
                         <button className="agregar" onClick={guardarEdicion}>Guardar</button>
                         <button className="eliminar" onClick={() => setEditando(null)}>Cancelar</button>
@@ -201,6 +212,7 @@ function Trabajos() {
                     <td>{t.hojas}</td>
                     <td>{formatearDinero(t.precio_hoja)}</td>
                     <td>{formatearDinero(t.total)}</td>
+                    <td>{formatearDinero(t.total_con_iva)}</td>
                     <td>{t.estado}</td>
                     <td>
                         <button type="button" className="whatsapp" onClick={() => enviarWhatsApp(t)}>WhatsApp</button>
