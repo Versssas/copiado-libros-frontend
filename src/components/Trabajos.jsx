@@ -171,6 +171,7 @@ function Trabajos() {
             <tr key={t.id}>
               {editando === t.id ? (
                 <>
+              
                   <td>{t.id}</td>
                   <td>
                     <select name="cliente_id" value={formEditar.cliente_id} onChange={handleChangeEditar}>
@@ -183,8 +184,28 @@ function Trabajos() {
                   <td><input type="date" name="fecha_entrega" value={formEditar.fecha_entrega} onChange={handleChangeEditar} /></td>
                   <td><input type="number" name="hojas" value={formEditar.hojas} onChange={handleChangeEditar} style={{width:'60px'}} /></td>
                   <td><input type="number" name="precio_hoja" value={formEditar.precio_hoja} onChange={handleChangeEditar} style={{width:'80px'}} /></td>
-                  <td>{formatearDinero(formEditar.hojas * formEditar.precio_hoja)}</td>
-                  <td>{formEditar.iva ? formatearDinero(formEditar.hojas * formEditar.precio_hoja * 1.21) : '-'}</td>
+                  <td>
+                    <label style={{
+                      background: formEditar.iva ? '#27ae60' : '#ddd',
+                      color: formEditar.iva ? 'white' : '#666',
+                      padding: '2px 10px',
+                      borderRadius: '12px',
+                      fontSize: '12px',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}>
+                      <input
+                        type="checkbox"
+                        checked={formEditar.iva === true}
+                        onChange={e => setFormEditar({ ...formEditar, iva: e.target.checked })}
+                        style={{ margin: 0 }}
+                      />
+                      IVA
+                    </label>
+                  </td>
+                  <td>{formEditar.iva ? formatearDinero(formEditar.hojas * formEditar.precio_hoja * 1.21) : formatearDinero(formEditar.hojas * formEditar.precio_hoja)}</td>
                   <td>
                     <select name="estado" value={formEditar.estado} onChange={handleChangeEditar}>
                       <option>Pendiente</option>
@@ -192,16 +213,6 @@ function Trabajos() {
                       <option>Entregado</option>
                       <option>Cobrado</option>
                     </select>
-                  </td>
-                  <td>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <input
-                        type="checkbox"
-                        checked={formEditar.iva === true}
-                        onChange={e => setFormEditar({ ...formEditar, iva: e.target.checked })}
-                      />
-                      IVA
-                    </label>
                   </td>
                   <td>
                     <button type="button" className="agregar" onClick={guardarEdicion}>Guardar</button>
