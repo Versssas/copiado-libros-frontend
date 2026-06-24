@@ -14,7 +14,7 @@ function Trabajos() {
     fecha: '',
     fecha_entrega: '',
     hojas: '',
-    precio_hoja: '',
+    precio_hoja: localStorage.getItem('ultimo_precio') || '',
     estado: 'Pendiente',
     iva: false
   })
@@ -57,7 +57,8 @@ function Trabajos() {
     const total = form.hojas * form.precio_hoja
     const total_con_iva = form.iva ? total * 1.21 : null
     await axios.post(`${API}/trabajos/`, { ...form, total, total_con_iva }, getConfig())
-    setForm({ cliente_id: '', fecha: '', fecha_entrega: '', hojas: '', precio_hoja: '', estado: 'Pendiente', iva: false })
+    localStorage.setItem('ultimo_precio', form.precio_hoja)
+    setForm({ cliente_id: '', fecha: '', fecha_entrega: '', hojas: '', precio_hoja: localStorage.getItem('ultimo_precio') || '', estado: 'Pendiente', iva: false })
     cargarTrabajos()
   }
 
