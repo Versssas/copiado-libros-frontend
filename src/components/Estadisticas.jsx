@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList} from 'recharts'
 
 const API = 'https://copiado-libros-backend-production.up.railway.app'
 
@@ -116,7 +116,9 @@ function Estadisticas() {
                     <XAxis dataKey="mes" />
                     <YAxis tickFormatter={(v) => '$' + Number(v).toLocaleString('es-AR')} />
                     <Tooltip formatter={(v) => '$' + Number(v).toLocaleString('es-AR')} />
-                    <Bar dataKey="total" fill="#c0392b" radius={[4,4,0,0]} maxBarSize={80} />
+                    <Bar dataKey="total" fill="#c0392b" radius={[4,4,0,0]} maxBarSize={80}>
+                        <LabelList dataKey="total" position="top" formatter={(v) => '$' + Number(v).toLocaleString('es-AR')} />
+                    </Bar>
                 </BarChart>
             </ResponsiveContainer>
         </div>
