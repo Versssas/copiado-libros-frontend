@@ -38,13 +38,25 @@ function Trabajos() {
   }, [])
 
   const cargarTrabajos = async () => {
+    try {
     const res = await axios.get(`${API}/trabajos/`, getConfig())
     setTrabajos(res.data)
+    
+  } catch (error) {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token')
+      window.location.reload()
+    }
+  }
   }
 
   const cargarClientes = async () => {
-    const res = await axios.get(`${API}/clientes/`, getConfig())
-    setClientes(res.data)
+    try {
+      const res = await axios.get(`${API}/clientes/`, getConfig())
+      setClientes(res.data)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const handleChange = (e) => {
@@ -116,6 +128,7 @@ function Trabajos() {
     window.open(`https://wa.me/54${telefono}?text=${encodeURIComponent(mensaje)}`, '_blank')
   }
 
+  
   return (
     <div>
       <h2>Trabajos</h2>
