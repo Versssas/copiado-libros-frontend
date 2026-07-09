@@ -109,9 +109,9 @@ function Estadisticas() {
         </table>
 
         <h3 className="subtitulo">Facturación por Mes</h3>
-        <div style={{ width: '100%', height: 300, marginBottom: '32px' }}>
+        <div style={{ width: '100%', height: 350, marginBottom: '32px' }}>
             <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={datosGrafico}>
+                <BarChart data={datosGrafico} margin={{ top: 30, right: 30, left: 80, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="mes" />
                     <YAxis tickFormatter={(v) => '$' + Number(v).toLocaleString('es-AR')} />
