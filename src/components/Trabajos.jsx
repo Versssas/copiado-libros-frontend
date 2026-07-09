@@ -253,7 +253,6 @@ function Trabajos() {
                   <td>{t.iva && t.total_con_iva ? formatearDinero(t.total_con_iva) : formatearDinero(t.total)}</td>
                   <td>{t.estado}</td>
                   <td>
-                    <button type="button" className="whatsapp" onClick={() => enviarWhatsApp(t)}>WhatsApp</button>
                     <button type="button" className="editar" onClick={() => empezarEdicion(t)}>Editar</button>
                     <button type="button" className="eliminar" onClick={() => eliminarTrabajo(t.id)}>Eliminar</button>
                   </td>
