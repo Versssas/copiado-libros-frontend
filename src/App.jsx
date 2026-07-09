@@ -7,9 +7,12 @@ import Estadisticas from './components/Estadisticas'
 function App() {
   const [pagina, setPagina] = useState('trabajos')
   const [modoOscuro, setModoOscuro] = useState(() => {
-    const modo = localStorage.getItem('modoOscuro')
-    return modo === 'true'
+   return localStorage.getItem('modo_oscuro') === 'true'
   })
+
+  useEffect(() => {
+    document.body.classList.toggle('dark', modoOscuro)
+  }, [modoOscuro])
 
   const [logueado, setLogueado] = useState(() => {
     const token = localStorage.getItem('token')
