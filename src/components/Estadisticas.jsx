@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 const API = 'https://copiado-libros-backend-production.up.railway.app'
 
@@ -62,6 +63,11 @@ function Estadisticas() {
     return acc
     }, {})
 
+
+    const datosGrafico = Object.entries(porMes).map(([mes, datos]) => ({
+    mes: mes.charAt(0).toUpperCase() + mes.slice(1),
+    total: Number(datos.total)
+    }))
     return (
     <div>
       <h2>Estadísticas</h2>
@@ -103,25 +109,36 @@ function Estadisticas() {
         </table>
 
         <h3 className="subtitulo">Facturación por Mes</h3>
+        <div style={{ width: '100%', height: 300, marginBottom: '32px' }}>
+            <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={datosGrafico}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="mes" />
+                    <YAxis tickFormatter={(v) => '$' + Number(v).toLocaleString('es-AR')} />
+                    <Tooltip formatter={(v) => '$' + Number(v).toLocaleString('es-AR')} />
+                    <Bar dataKey="total" fill="#c0392b" radius={[4,4,0,0]} />
+                </BarChart>
+            </ResponsiveContainer>
+        </div>
         <table>
-          <thead>
-            <tr>
-              <th>Mes</th>
-              <th>Cantidad</th>
-              <th>Hojas</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.entries(porMes).map(([mes, datos]) => (
-              <tr key={mes}>
-                <td>{mes}</td>
-                <td>{datos.cantidad}</td>
-                <td>{datos.hojas}</td>
-                <td>{formatearDinero(datos.total)}</td>
-              </tr>
-            ))}
-          </tbody>
+            <thead>
+                <tr>
+                    <th>Mes</th>
+                    <th>Cantidad</th>
+                    <th>Hojas</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {Object.entries(porMes).map(([mes, datos]) => (
+                    <tr key={mes}>
+                        <td>{mes}</td>
+                        <td>{datos.cantidad}</td>
+                        <td>{datos.hojas}</td>
+                        <td>{formatearDinero(datos.total)}</td>
+                    </tr>
+                ))}
+            </tbody>
         </table>
 
         <h3 className="subtitulo">Por Cliente</h3>
