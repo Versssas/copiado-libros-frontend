@@ -116,7 +116,7 @@ function Estadisticas() {
                     <XAxis dataKey="mes" />
                     <YAxis tickFormatter={(v) => '$' + Number(v).toLocaleString('es-AR')} />
                     <Tooltip formatter={(v) => '$' + Number(v).toLocaleString('es-AR')} />
-                    <Bar dataKey="total" fill="#c0392b" radius={[4,4,0,0]} />
+                    <Bar dataKey="total" fill="#c0392b" radius={[4,4,0,0]} maxBarSize={80} />
                 </BarChart>
             </ResponsiveContainer>
         </div>
