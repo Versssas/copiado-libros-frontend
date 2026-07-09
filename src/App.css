@@ -404,47 +404,43 @@ button.whatsapp:hover {
   background: #1da851;
 }
 
-.dark {
+body.dark {
   background: #1a1a1a;
   color: #f0f0f0;
 }
 
-.dark nav {
+body.dark nav {
   background: #8b2020;
 }
 
-.dark table {
+body.dark table {
   background: #2a2a2a;
 }
 
-.dark thead {
+body.dark thead {
   background: #8b2020;
 }
 
-.dark td {
+body.dark td {
   border-bottom: 1px solid #3a3a3a;
   color: #f0f0f0;
 }
 
-.dark tr:hover td {
+body.dark tr:hover td {
   background: #333;
 }
 
-.dark .form-card, .dark .form-row {
+body.dark .form-card, body.dark .form-row {
   background: #2a2a2a;
 }
 
-.dark input, .dark select {
+body.dark input, body.dark select {
   background: #3a3a3a;
   color: #f0f0f0;
   border-color: #555;
 }
 
-.dark h2 {
+body.dark h2 {
   color: #e57373;
   border-bottom-color: #444;
-}
-
-.dark body {
-  background: #1a1a1a;
 }

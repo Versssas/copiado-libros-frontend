@@ -4,6 +4,7 @@ import Trabajos from './components/Trabajos'
 import Login from './components/Login'
 import './App.css'
 import Estadisticas from './components/Estadisticas'
+import { useEffect } from 'react'
 function App() {
   const [pagina, setPagina] = useState('trabajos')
   const [modoOscuro, setModoOscuro] = useState(() => {
