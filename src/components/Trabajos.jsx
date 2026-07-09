@@ -64,17 +64,21 @@ function Trabajos() {
   }
 
   const agregarTrabajo = async () => {
-    if (!form.cliente_id || !form.fecha || !form.fecha_entrega || !form.hojas || !form.precio_hoja) {
-      alert('Completá todos los campos')
-      return
+      if (!form.cliente_id || !form.fecha || !form.fecha_entrega || !form.hojas || !form.precio_hoja) {
+        alert('Completá todos los campos')
+        return
+      }
+      const total = form.hojas * form.precio_hoja
+      const total_con_iva = form.iva ? total * 1.21 : null
+      try {
+        await axios.post(`${API}/trabajos/`, { ...form, total, total_con_iva }, getConfig())
+        localStorage.setItem('ultimo_precio', form.precio_hoja)
+        setForm({ cliente_id: '', nro_factura: '', fecha: '', fecha_entrega: '', hojas: '', precio_hoja: localStorage.getItem('ultimo_precio') || '', estado: 'Pendiente', iva: false })
+        cargarTrabajos()
+      } catch (error) {
+        alert(error.response?.data?.error || 'Error al guardar el trabajo')
+      }
     }
-    const total = form.hojas * form.precio_hoja
-    const total_con_iva = form.iva ? total * 1.21 : null
-    await axios.post(`${API}/trabajos/`, { ...form, total, total_con_iva }, getConfig())
-    localStorage.setItem('ultimo_precio', form.precio_hoja)
-    setForm({ cliente_id: '', nro_factura: '', fecha: '', fecha_entrega: '', hojas: '', precio_hoja: localStorage.getItem('ultimo_precio') || '', estado: 'Pendiente', iva: false })
-    cargarTrabajos()
-  }
 
   const eliminarTrabajo = async (id) => {
     if (!confirm('¿Seguro que querés eliminar este trabajo?')) return
