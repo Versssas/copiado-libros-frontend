@@ -6,6 +6,11 @@ import './App.css'
 import Estadisticas from './components/Estadisticas'
 function App() {
   const [pagina, setPagina] = useState('trabajos')
+  const [modoOscuro, setModoOscuro] = useState(() => {
+    const modo = localStorage.getItem('modoOscuro')
+    return modo === 'true'
+  })
+
   const [logueado, setLogueado] = useState(() => {
     const token = localStorage.getItem('token')
     return !!token
@@ -20,15 +25,24 @@ function App() {
     setLogueado(false)
   }
 
+
+
   if (!logueado) {
     return <Login onLogin={handleLogin} />
   }
 
   return (
-    <div className="app">
+    <div className="app ${modoOscuro ? 'dark' : ''}">
       <nav>
         <h1>Copiado de Libros Pergamino</h1>
         <div>
+          <button onClick={() => {
+              const nuevo = !modoOscuro
+              setModoOscuro(nuevo)
+              localStorage.setItem('modo_oscuro', nuevo)
+          }}>
+              {modoOscuro ? '☀️' : '🌙'}
+          </button>
           <button onClick={() => setPagina('trabajos')}>Trabajos</button>
           <button onClick={() => setPagina('clientes')}>Clientes</button>
           <button onClick={() => setPagina('estadisticas')}>Estadísticas</button>
