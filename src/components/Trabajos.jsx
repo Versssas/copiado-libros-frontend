@@ -186,8 +186,8 @@ function Trabajos() {
           <tr>
             <th>Nro. Factura</th>
             <th>Cliente</th>
-            <th>Fecha</th>
-            <th>F. Entrega</th>
+            <th>Recibido</th>
+            <th>Entregado</th>
             <th>Hojas</th>
             <th>Precio</th>
             <th>IVA</th>
