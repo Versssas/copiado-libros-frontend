@@ -109,32 +109,46 @@ function Estadisticas() {
         </table>
 
         <h3 className="subtitulo">Facturación por Mes</h3>
-        <div style={{ width: '100%', height: 350, marginBottom: '32px', background: 'white', borderRadius: '8px', padding: '20px', boxShadow: '0 1px 4px rgba(0,0,0,0.1)' }}>
+        <div style={{ 
+    width: '100%', 
+    height: 350, 
+    marginBottom: '32px', 
+    background: 'var(--color-background-secondary, white)', 
+    borderRadius: '8px', 
+    padding: '20px', 
+    boxShadow: '0 1px 4px rgba(0,0,0,0.1)' 
+}}>
     <ResponsiveContainer width="100%" height="100%">
         <BarChart data={datosGrafico} margin={{ top: 30, right: 30, left: 80, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#44444440" />
             <XAxis 
                 dataKey="mes" 
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: '#888', fontSize: 13 }}
+                tick={{ fill: 'currentColor', fontSize: 13 }}
             />
             <YAxis 
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: '#888', fontSize: 12 }}
+                tick={{ fill: 'currentColor', fontSize: 12 }}
                 tickFormatter={(v) => '$' + Number(v).toLocaleString('es-AR')}
             />
             <Tooltip 
                 formatter={(v) => ['$' + Number(v).toLocaleString('es-AR'), 'Total']}
-                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}
+                contentStyle={{ 
+                    borderRadius: '8px', 
+                    border: 'none', 
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                    background: 'var(--color-background-primary, white)',
+                    color: 'var(--color-text-primary, black)'
+                }}
             />
             <Bar dataKey="total" fill="#c0392b" radius={[6,6,0,0]} maxBarSize={80}>
                 <LabelList 
                     dataKey="total" 
                     position="top" 
                     formatter={(v) => '$' + Number(v).toLocaleString('es-AR')}
-                    style={{ fill: '#555', fontSize: 12, fontWeight: 500 }}
+                    style={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
                 />
             </Bar>
         </BarChart>
