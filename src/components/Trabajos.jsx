@@ -270,9 +270,9 @@ function Trabajos() {
                   <td>{t.iva && t.total_con_iva ? formatearDinero(t.total_con_iva) : formatearDinero(t.total)}</td>
                   <td style={{
                     textDecoration: t.estado === 'Cobrado' ? 'line-through' : 'none',
-                    color: t.estado === 'Cobrado' ? '#00ff00c4' : 'inherit'
+                    color: t.estado === 'Cobrado' ? 'var(--color-text-tertiary, #aaa)' : 'inherit'
                   }}>{t.estado}</td>
-
+                  
                   <td>
                     <button type="button" className="editar" onClick={() => empezarEdicion(t)}>Editar</button>
                     <button type="button" className="eliminar" onClick={() => eliminarTrabajo(t.id)}>Eliminar</button>
