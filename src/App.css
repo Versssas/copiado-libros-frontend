@@ -444,3 +444,7 @@ body.dark h2 {
   color: #e57373;
   border-bottom-color: #444;
 }
+body.dark .recharts-wrapper {
+    background: #2a2a2a;
+    border-radius: 8px;
+}
