@@ -113,7 +113,7 @@ function Estadisticas() {
     width: '100%', 
     height: 350, 
     marginBottom: '32px', 
-    background: 'var(--color-background-secondary, white)', 
+    background: 'transparent', 
     borderRadius: '8px', 
     padding: '20px', 
     boxShadow: '0 1px 4px rgba(0,0,0,0.1)' 
