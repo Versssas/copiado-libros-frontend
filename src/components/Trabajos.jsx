@@ -1,14 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import axios from 'axios'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 
 const API = 'https://copiado-libros-backend-production.up.railway.app'
 const getConfig = () => ({
     headers: { authorization: localStorage.getItem('token') }
 })
 
-function Trabajos() {
-  const [trabajos, setTrabajos] = useState([])
-  const [clientes, setClientes] = useState([])
+function Trabajos({ trabajos, clientes, recargar }) {
   const [form, setForm] = useState({
     cliente_id: '',
     nro_factura: '',
@@ -32,58 +31,31 @@ function Trabajos() {
   })
   const [busqueda, setBusqueda] = useState('')
 
-  useEffect(() => {
-    cargarTrabajos()
-    cargarClientes()
-  }, [])
-
-  const cargarTrabajos = async () => {
-    try {
-    const res = await axios.get(`${API}/trabajos/`, getConfig())
-    setTrabajos(res.data)
-    
-  } catch (error) {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('token')
-      window.location.reload()
-    }
-  }
-  }
-
-  const cargarClientes = async () => {
-    try {
-      const res = await axios.get(`${API}/clientes/`, getConfig())
-      setClientes(res.data)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
   const agregarTrabajo = async () => {
-      if (!form.cliente_id || !form.fecha || !form.fecha_entrega || !form.hojas || !form.precio_hoja) {
-        alert('Completá todos los campos')
-        return
-      }
-      const total = form.hojas * form.precio_hoja
-      const total_con_iva = form.iva ? total * 1.21 : null
-      try {
-        await axios.post(`${API}/trabajos/`, { ...form, total, total_con_iva }, getConfig())
-        localStorage.setItem('ultimo_precio', form.precio_hoja)
-        setForm({ cliente_id: '', nro_factura: '', fecha: '', fecha_entrega: '', hojas: '', precio_hoja: localStorage.getItem('ultimo_precio') || '', estado: 'Pendiente', iva: false })
-        cargarTrabajos()
-      } catch (error) {
-        alert(error.response?.data?.error || 'Error al guardar el trabajo')
-      }
+    if (!form.cliente_id || !form.fecha || !form.fecha_entrega || !form.hojas || !form.precio_hoja) {
+      alert('Completá todos los campos')
+      return
     }
+    const total = form.hojas * form.precio_hoja
+    const total_con_iva = form.iva ? total * 1.21 : null
+    try {
+      await axios.post(`${API}/trabajos/`, { ...form, total, total_con_iva }, getConfig())
+      localStorage.setItem('ultimo_precio', form.precio_hoja)
+      setForm({ cliente_id: '', nro_factura: '', fecha: '', fecha_entrega: '', hojas: '', precio_hoja: localStorage.getItem('ultimo_precio') || '', estado: 'Pendiente', iva: false })
+      recargar()
+    } catch (error) {
+      alert(error.response?.data?.error || 'Error al guardar el trabajo')
+    }
+  }
 
   const eliminarTrabajo = async (id) => {
     if (!confirm('¿Seguro que querés eliminar este trabajo?')) return
     await axios.delete(`${API}/trabajos/${id}`, getConfig())
-    cargarTrabajos()
+    recargar()
   }
 
   const formatearFecha = (fecha) => {
@@ -114,7 +86,7 @@ function Trabajos() {
     const total_con_iva = formEditar.iva ? total * 1.21 : null
     await axios.put(`${API}/trabajos/${editando}`, { ...formEditar, total, total_con_iva }, getConfig())
     setEditando(null)
-    cargarTrabajos()
+    recargar()
   }
 
   const handleChangeEditar = (e) => {
@@ -126,13 +98,6 @@ function Trabajos() {
     (t.nro_factura && t.nro_factura.toLowerCase().includes(busqueda.toLowerCase()))
   )
 
-  const enviarWhatsApp = (trabajo) => {
-    const mensaje = `Hola, su trabajo de ${trabajo.hojas} hojas está listo. Total: ${formatearDinero(trabajo.total)}. Necesitas factura A o B?`
-    const telefono = trabajo.cliente_telefono?.replace(/\D/g, '')
-    window.open(`https://wa.me/54${telefono}?text=${encodeURIComponent(mensaje)}`, '_blank')
-  }
-
-  
   return (
     <div>
       <h2>Trabajos</h2>
@@ -151,14 +116,7 @@ function Trabajos() {
               <option key={c.id} value={c.id}>{c.nombre}</option>
             ))}
           </select>
-          <input
-            type="text"
-            name="nro_factura"
-            placeholder="Nro. Factura"
-            value={form.nro_factura}
-            onChange={handleChange}
-            style={{width: '100px'}}
-          />
+          <input type="text" name="nro_factura" placeholder="Nro. Factura" value={form.nro_factura} onChange={handleChange} style={{width: '100px'}} />
           <input type="date" name="fecha" value={form.fecha} onChange={handleChange} />
           <input type="date" name="fecha_entrega" value={form.fecha_entrega} onChange={handleChange} />
           <input type="number" name="hojas" placeholder="Hojas" value={form.hojas} onChange={handleChange} />
@@ -186,8 +144,8 @@ function Trabajos() {
           <tr>
             <th>Nro. Factura</th>
             <th>Cliente</th>
-            <th>Recibido</th>
-            <th>Entregado</th>
+            <th>Fecha</th>
+            <th>F. Entrega</th>
             <th>Hojas</th>
             <th>Precio</th>
             <th>IVA</th>
@@ -271,8 +229,9 @@ function Trabajos() {
                   <td style={{
                     textDecoration: t.estado === 'Cobrado' ? 'line-through' : 'none',
                     color: t.estado === 'Cobrado' ? 'var(--color-text-tertiary, #aaa)' : 'inherit'
-                  }}>{t.estado}</td>
-                  
+                  }}>
+                    {t.estado}
+                  </td>
                   <td>
                     <button type="button" className="editar" onClick={() => empezarEdicion(t)}>Editar</button>
                     <button type="button" className="eliminar" onClick={() => eliminarTrabajo(t.id)}>Eliminar</button>

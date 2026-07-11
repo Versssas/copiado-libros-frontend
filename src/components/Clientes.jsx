@@ -1,28 +1,17 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import axios from 'axios'
 
 const API = 'https://copiado-libros-backend-production.up.railway.app'
-
 const getConfig = () => ({
     headers: { authorization: localStorage.getItem('token') }
 })
 
-function Clientes() {
-  const [clientes, setClientes] = useState([])
+function Clientes({ clientes, recargar }) {
   const [nombre, setNombre] = useState('')
   const [cuit, setCuit] = useState('')
   const [telefono, setTelefono] = useState('')
   const [editando, setEditando] = useState(null)
   const [formEditar, setFormEditar] = useState({ nombre: '', cuit: '', telefono: '' })
-
-  useEffect(() => {
-    cargarClientes()
-  }, [])
-
-  const cargarClientes = async () => {
-    const res = await axios.get(`${API}/clientes/`, getConfig())
-    setClientes(res.data)
-  }
 
   const agregarCliente = async () => {
     if (!nombre || !cuit) {
@@ -33,14 +22,14 @@ function Clientes() {
     setNombre('')
     setCuit('')
     setTelefono('')
-    cargarClientes()
+    recargar()
   }
 
   const eliminarCliente = async (id) => {
     if (!confirm('¿Seguro que querés eliminar este cliente?')) return
     try {
       await axios.delete(`${API}/clientes/${id}`, getConfig())
-      cargarClientes()
+      recargar()
     } catch (error) {
       alert('No se puede eliminar un cliente con trabajos asociados')
     }
@@ -54,7 +43,7 @@ function Clientes() {
   const guardarEdicion = async () => {
     await axios.put(`${API}/clientes/${editando}`, formEditar, getConfig())
     setEditando(null)
-    cargarClientes()
+    recargar()
   }
 
   const handleChangeEditar = (e) => {
