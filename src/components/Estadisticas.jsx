@@ -1,30 +1,11 @@
-import { useState, useEffect } from 'react'
-import axios from 'axios'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList} from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 
-const API = 'https://copiado-libros-backend-production.up.railway.app'
-
-const getConfig = () => ({
-    headers: { authorization: localStorage.getItem('token') }
-})
-
-function Estadisticas() {
-  const [trabajos, setTrabajos] = useState([])
-
-  useEffect(() => {
-    cargarTrabajos()
-  }, [])
-
-  const cargarTrabajos = async () => {
-    const res = await axios.get(`${API}/trabajos/`, getConfig())
-    setTrabajos(res.data)
-  }
+function Estadisticas({ trabajos }) {
 
   const formatearDinero = (monto) => {
     return '$' + Number(monto).toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
   }
 
-  // Totales por mes
   const porMes = trabajos.reduce((acc, t) => {
     const mes = new Date(t.fecha).toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })
     if (!acc[mes]) acc[mes] = { total: 0, cantidad: 0, hojas: 0 }
@@ -32,9 +13,8 @@ function Estadisticas() {
     acc[mes].cantidad += 1
     acc[mes].hojas += Number(t.hojas)
     return acc
-}, {})
+  }, {})
 
-  // Por estado
   const porEstado = trabajos.reduce((acc, t) => {
     if (!acc[t.estado]) acc[t.estado] = { cantidad: 0, total: 0 }
     acc[t.estado].cantidad += 1
@@ -42,7 +22,6 @@ function Estadisticas() {
     return acc
   }, {})
 
-  // Cobrado vs pendiente
   const cobrado = trabajos
     .filter(t => t.estado === 'Cobrado')
     .reduce((acc, t) => acc + Number(t.total), 0)
@@ -53,7 +32,7 @@ function Estadisticas() {
 
   const porCliente = trabajos.reduce((acc, t) => {
     const nombre = t.cliente_nombre
-    if (!acc[nombre]) acc[nombre] = { cantidad: 0, cobrado : 0, pendiente: 0}
+    if (!acc[nombre]) acc[nombre] = { cantidad: 0, cobrado: 0, pendiente: 0 }
     acc[nombre].cantidad += 1
     if (t.estado === 'Cobrado') {
       acc[nombre].cobrado += Number(t.total)
@@ -61,14 +40,14 @@ function Estadisticas() {
       acc[nombre].pendiente += Number(t.total)
     }
     return acc
-    }, {})
+  }, {})
 
-
-    const datosGrafico = Object.entries(porMes).map(([mes, datos]) => ({
+  const datosGrafico = Object.entries(porMes).map(([mes, datos]) => ({
     mes: mes.charAt(0).toUpperCase() + mes.slice(1),
     total: Number(datos.total)
-    }))
-    return (
+  }))
+
+  return (
     <div>
       <h2>Estadísticas</h2>
 
@@ -109,70 +88,39 @@ function Estadisticas() {
         </table>
 
         <h3 className="subtitulo">Facturación por Mes</h3>
-        <div style={{ 
-    width: '100%', 
-    height: 350, 
-    marginBottom: '32px', 
-    background: 'transparent', 
-    borderRadius: '8px', 
-    padding: '20px', 
-    boxShadow: '0 1px 4px rgba(0,0,0,0.1)' 
-}}>
-    <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={datosGrafico} margin={{ top: 30, right: 30, left: 80, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#44444440" />
-            <XAxis 
-                dataKey="mes" 
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: 'currentColor', fontSize: 13 }}
-            />
-            <YAxis 
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: 'currentColor', fontSize: 12 }}
-                tickFormatter={(v) => '$' + Number(v).toLocaleString('es-AR')}
-            />
-            <Tooltip 
-                formatter={(v) => ['$' + Number(v).toLocaleString('es-AR'), 'Total']}
-                contentStyle={{ 
-                    borderRadius: '8px', 
-                    border: 'none', 
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                    background: 'var(--color-background-primary, white)',
-                    color: 'var(--color-text-primary, black)'
-                }}
-            />
-            <Bar dataKey="total" fill="#c0392b" radius={[6,6,0,0]} maxBarSize={80}>
-                <LabelList 
-                    dataKey="total" 
-                    position="top" 
-                    formatter={(v) => '$' + Number(v).toLocaleString('es-AR')}
-                    style={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
-                />
-            </Bar>
-        </BarChart>
-    </ResponsiveContainer>
-</div>
+        <div style={{ width: '100%', height: 350, marginBottom: '32px' }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={datosGrafico} margin={{ top: 30, right: 30, left: 80, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#44444440" />
+              <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fill: 'currentColor', fontSize: 13 }} />
+              <YAxis axisLine={false} tickLine={false} tick={{ fill: 'currentColor', fontSize: 12 }} tickFormatter={(v) => '$' + Number(v).toLocaleString('es-AR')} />
+              <Tooltip formatter={(v) => ['$' + Number(v).toLocaleString('es-AR'), 'Total']} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }} />
+              <Bar dataKey="total" fill="#c0392b" radius={[6,6,0,0]} maxBarSize={80}>
+                <LabelList dataKey="total" position="top" formatter={(v) => '$' + Number(v).toLocaleString('es-AR')} style={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }} />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
         <table>
-            <thead>
-                <tr>
-                    <th>Mes</th>
-                    <th>Cantidad</th>
-                    <th>Hojas</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                {Object.entries(porMes).map(([mes, datos]) => (
-                    <tr key={mes}>
-                        <td>{mes}</td>
-                        <td>{datos.cantidad}</td>
-                        <td>{datos.hojas}</td>
-                        <td>{formatearDinero(datos.total)}</td>
-                    </tr>
-                ))}
-            </tbody>
+          <thead>
+            <tr>
+              <th>Mes</th>
+              <th>Cantidad</th>
+              <th>Hojas</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.entries(porMes).map(([mes, datos]) => (
+              <tr key={mes}>
+                <td>{mes}</td>
+                <td>{datos.cantidad}</td>
+                <td>{datos.hojas}</td>
+                <td>{formatearDinero(datos.total)}</td>
+              </tr>
+            ))}
+          </tbody>
         </table>
 
         <h3 className="subtitulo">Por Cliente</h3>
@@ -200,4 +148,5 @@ function Estadisticas() {
     </div>
   )
 }
+
 export default Estadisticas
