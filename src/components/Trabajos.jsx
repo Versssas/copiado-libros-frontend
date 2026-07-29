@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import axios from 'axios'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 
 const API = 'https://copiado-libros-backend-production.up.railway.app'
 const getConfig = () => ({
@@ -30,9 +29,18 @@ function Trabajos({ trabajos, clientes, recargar }) {
     iva: false
   })
   const [busqueda, setBusqueda] = useState('')
+  const [orden, setOrden] = useState({ campo: 'id', direccion: 'asc' })
+  const [filtroEstado, setFiltroEstado] = useState('')
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
+  }
+
+  const ordenar = (campo) => {
+    setOrden(prev => ({
+        campo,
+        direccion: prev.campo === campo && prev.direccion === 'asc' ? 'desc' : 'asc'
+    }))
   }
 
   const agregarTrabajo = async () => {
@@ -93,21 +101,52 @@ function Trabajos({ trabajos, clientes, recargar }) {
     setFormEditar({ ...formEditar, [e.target.name]: e.target.value })
   }
 
-  const trabajosFiltrados = trabajos.filter(t =>
-    t.cliente_nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-    (t.nro_factura && t.nro_factura.toLowerCase().includes(busqueda.toLowerCase()))
-  )
+  const trabajosFiltrados = trabajos
+    .filter(t =>
+      (t.cliente_nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+      (t.nro_factura && t.nro_factura.toLowerCase().includes(busqueda.toLowerCase()))) &&
+      (filtroEstado === '' || t.estado === filtroEstado)
+    )
+    .sort((a, b) => {
+      let valA = a[orden.campo]
+      let valB = b[orden.campo]
+      if (orden.campo === 'fecha' || orden.campo === 'fecha_entrega') {
+        valA = new Date(a[orden.campo])
+        valB = new Date(b[orden.campo])
+      }
+      if (orden.campo === 'total' || orden.campo === 'precio_hoja' || orden.campo === 'hojas') {
+        valA = Number(a[orden.campo])
+        valB = Number(b[orden.campo])
+      }
+      if (orden.campo === 'cliente_nombre') {
+        valA = a.cliente_nombre
+        valB = b.cliente_nombre
+      }
+      if (valA < valB) return orden.direccion === 'asc' ? -1 : 1
+      if (valA > valB) return orden.direccion === 'asc' ? 1 : -1
+      return 0
+    })
 
   return (
     <div>
       <h2>Trabajos</h2>
-      <input
-        type="text"
-        placeholder="Buscar por cliente o nro. factura..."
-        value={busqueda}
-        onChange={e => setBusqueda(e.target.value)}
-        style={{ marginBottom: '16px', width: '300px' }}
-      />
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '16px' }}>
+        <input
+          type="text"
+          placeholder="Buscar por cliente o nro. factura..."
+          value={busqueda}
+          onChange={e => setBusqueda(e.target.value)}
+          style={{ width: '300px' }}
+        />
+        <select value={filtroEstado} onChange={e => setFiltroEstado(e.target.value)}>
+          <option value="">Todos los estados</option>
+          <option>Pendiente</option>
+          <option>En proceso</option>
+          <option>Entregado</option>
+          <option>Cobrado</option>
+        </select>
+      </div>
+
       <div className="form-card">
         <div className="form-row">
           <select name="cliente_id" value={form.cliente_id} onChange={handleChange}>
@@ -143,13 +182,23 @@ function Trabajos({ trabajos, clientes, recargar }) {
         <thead>
           <tr>
             <th>Nro. Factura</th>
-            <th>Cliente</th>
-            <th>Fecha</th>
-            <th>F. Entrega</th>
-            <th>Hojas</th>
+            <th onClick={() => ordenar('cliente_nombre')} style={{ cursor: 'pointer' }}>
+              Cliente {orden.campo === 'cliente_nombre' ? (orden.direccion === 'asc' ? '↑' : '↓') : '↕'}
+            </th>
+            <th onClick={() => ordenar('fecha')} style={{ cursor: 'pointer' }}>
+              Fecha {orden.campo === 'fecha' ? (orden.direccion === 'asc' ? '↑' : '↓') : '↕'}
+            </th>
+            <th onClick={() => ordenar('fecha_entrega')} style={{ cursor: 'pointer' }}>
+              F. Entrega {orden.campo === 'fecha_entrega' ? (orden.direccion === 'asc' ? '↑' : '↓') : '↕'}
+            </th>
+            <th onClick={() => ordenar('hojas')} style={{ cursor: 'pointer' }}>
+              Hojas {orden.campo === 'hojas' ? (orden.direccion === 'asc' ? '↑' : '↓') : '↕'}
+            </th>
             <th>Precio</th>
             <th>IVA</th>
-            <th>Total</th>
+            <th onClick={() => ordenar('total')} style={{ cursor: 'pointer' }}>
+              Total {orden.campo === 'total' ? (orden.direccion === 'asc' ? '↑' : '↓') : '↕'}
+            </th>
             <th>Estado</th>
             <th>Acciones</th>
           </tr>
