@@ -67,6 +67,20 @@ function App() {
     )
   }
 
+  const exportarBackup = () => {
+    const XLSX = require('xlsx')
+    
+    const wsTrabajos = XLSX.utils.json_to_sheet(trabajos)
+    const wsClientes = XLSX.utils.json_to_sheet(clientes)
+    
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, wsClientes, 'Clientes')
+    XLSX.utils.book_append_sheet(wb, wsTrabajos, 'Trabajos')
+    
+    const fecha = new Date().toLocaleDateString('es-AR').replace(/\//g, '-')
+    XLSX.writeFile(wb, `backup-copiado-libros-${fecha}.xlsx`)
+}
+
   return (
     <div className="app">
       <nav>
@@ -75,6 +89,7 @@ function App() {
           <button onClick={() => setPagina('trabajos')}>Trabajos</button>
           <button onClick={() => setPagina('clientes')}>Clientes</button>
           <button onClick={() => setPagina('estadisticas')}>Estadísticas</button>
+          <button onClick={exportarBackup}>💾 Backup</button>
           <button onClick={() => {
             const nuevo = !modoOscuro
             setModoOscuro(nuevo)
