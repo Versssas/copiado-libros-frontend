@@ -7,7 +7,9 @@ function Estadisticas({ trabajos }) {
   }
 
   const porMes = trabajos.reduce((acc, t) => {
-    const mes = new Date(t.fecha).toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })
+    const [year, month] = t.fecha.split('T')[0].split('-')
+    const fecha = new Date(year, month - 1, 1)
+    const mes = fecha.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })
     if (!acc[mes]) acc[mes] = { total: 0, cantidad: 0, hojas: 0 }
     acc[mes].total += Number(t.total)
     acc[mes].cantidad += 1
