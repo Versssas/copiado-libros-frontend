@@ -528,3 +528,73 @@ body.dark .editing-modal label {
 body.dark .editing-modal h3 {
   color: #e57373;
 }
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f4f4f6;
+}
+
+.login-box {
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 360px;
+  text-align: center;
+}
+
+.login-box h1 {
+  color: #9b1c1c;
+  font-weight: 700;
+  font-size: 28px;
+}
+
+.login-box h2 {
+  color: #888;
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 3px;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 12px;
+}
+
+.login-box button {
+  background: #9b1c1c;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.login-box button:hover {
+  background: #7f1515;
+}
+
+.error {
+  color: #9b1c1c;
+  font-size: 14px;
+}
+
+body.dark .login-container {
+  background: #111318;
+}
+
+body.dark .login-box {
+  background: #1e2029;
+  color: #e8e8f0;
+}
