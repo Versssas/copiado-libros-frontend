@@ -44,6 +44,26 @@ function Trabajos({ trabajos, clientes, recargar, mostrarToast }) {
     }))
   }
 
+  const [modalFactura, setModalFactura] = useState(null)
+
+const emitirFactura = (id) => {
+    setModalFactura(id)
+}
+
+const confirmarFactura = async (tipo) => {
+    try {
+        const res = await axios.post(`${API}/facturas/emitir`, {
+            trabajo_id: modalFactura,
+            tipo_factura: tipo
+        }, getConfig())
+        setModalFactura(null)
+        mostrarToast(`Factura emitida! CAE: ${res.data.cae}`)
+        recargar()
+    } catch (error) {
+        mostrarToast(error.response?.data?.error || 'Error al emitir factura', 'error')
+    }
+}
+
   const agregarTrabajo = async () => {
     if (!form.cliente_id || !form.fecha || !form.fecha_entrega || !form.hojas || !form.precio_hoja) {
       mostrarToast('Completá todos los campos')
@@ -298,6 +318,24 @@ function Trabajos({ trabajos, clientes, recargar, mostrarToast }) {
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end', marginTop: '20px' }}>
                 <button type="button" className="eliminar" onClick={() => setEditando(null)}>Cancelar</button>
                 <button type="button" className="agregar" onClick={guardarEdicion}>Guardar</button>
+            </div>
+        </div>
+    </>,
+    document.body
+)}
+  {modalFactura && createPortal(
+    <>
+        <div className="editing-overlay" onClick={() => setModalFactura(null)} />
+        <div className="editing-modal" style={{ width: '320px', textAlign: 'center' }}>
+            <h3>Tipo de Factura</h3>
+            <p style={{ color: '#888', marginBottom: '20px', fontSize: '14px' }}>Seleccioná el tipo de comprobante</p>
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                <button type="button" className="agregar" onClick={() => confirmarFactura(1)}>Factura A</button>
+                <button type="button" className="agregar" onClick={() => confirmarFactura(6)}>Factura B</button>
+                <button type="button" className="agregar" onClick={() => confirmarFactura(11)}>Factura C</button>
+            </div>
+            <div style={{ marginTop: '16px' }}>
+                <button type="button" className="eliminar" onClick={() => setModalFactura(null)}>Cancelar</button>
             </div>
         </div>
     </>,

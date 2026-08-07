@@ -598,3 +598,20 @@ body.dark .login-box {
   background: #1e2029;
   color: #e8e8f0;
 }
+
+button.factura {
+  background: #1a6b3a;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.15s;
+  margin-left: 4px;
+}
+
+button.factura:hover {
+  background: #145230;
+}
