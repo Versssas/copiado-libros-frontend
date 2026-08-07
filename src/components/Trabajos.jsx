@@ -178,7 +178,9 @@ function Trabajos({ trabajos, clientes, recargar, mostrarToast }) {
             IVA 21%
           </label>
         </div>
+        <div style={{display : 'flex', justifyContent: 'fiex-end', marginTop: '12px' }}>
         <button type="button" className="agregar" onClick={agregarTrabajo}>Agregar</button>
+      </div>
       </div>
     {editando && <div className="editing-overlay" onClick={() => setEditando(null)} />}
     <div className="table-container">
