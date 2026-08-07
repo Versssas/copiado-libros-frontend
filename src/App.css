@@ -227,13 +227,21 @@ td {
   white-space: nowrap;
   color: #1a1a2e;
 }
-
-td:last-child, th:last-child {
+td:last-child {
+  white-space: nowrap;
+  min-width: 140px;
+}
+th:last-child {
   border-left: 1px solid #e8e8f0;
 }
 
 body.dark td:last-child, body.dark th:last-child {
   border-left-color: #2a2d3a;
+}
+tr input, tr select {
+  max-width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 tr:last-child td {
@@ -440,4 +448,79 @@ body.dark button.eliminar:hover {
     flex-direction: column;
     gap: 8px;
   }
+}
+.editing-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+}
+
+.editing-row {
+  position: relative;
+  z-index: 101;
+  background: white;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+body.dark .editing-row {
+  background: #1e2029;
+}
+
+.editing-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  z-index: 9999;
+  width: 480px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: modalIn 0.2s ease;
+}
+
+.editing-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  z-index: 9998;
+}
+.modal-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.modal-form label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+body.dark .editing-modal {
+  background: #1e2029;
+  color: #e8e8f0;
+}
+
+body.dark .editing-modal label {
+  color: #aaa;
+}
+
+body.dark .editing-modal h3 {
+  color: #e57373;
 }
