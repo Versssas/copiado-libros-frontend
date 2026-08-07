@@ -59,7 +59,7 @@ function Clientes({ clientes, recargar }) {
         <input placeholder="Teléfono" value={telefono} onChange={e => setTelefono(e.target.value)} />
         <button type="button" className="agregar" onClick={agregarCliente}>Agregar</button>
       </div>
-
+    <div className="table-container">
       <table>
         <thead>
           <tr>
@@ -99,6 +99,7 @@ function Clientes({ clientes, recargar }) {
           ))}
         </tbody>
       </table>
+    </div>  
     </div>
   )
 }

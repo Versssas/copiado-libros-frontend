@@ -177,7 +177,8 @@ function Trabajos({ trabajos, clientes, recargar }) {
         </div>
         <button type="button" className="agregar" onClick={agregarTrabajo}>Agregar</button>
       </div>
-
+    
+    <div className="table-container">
       <table>
         <thead>
           <tr>
@@ -291,6 +292,7 @@ function Trabajos({ trabajos, clientes, recargar }) {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   )
 }

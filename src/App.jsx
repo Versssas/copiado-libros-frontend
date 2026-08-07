@@ -86,7 +86,7 @@ function App() {
     <div className="app">
       <nav>
         <h1>Copiado de Libros Pergamino</h1>
-        <div>
+        <div className="nav-buttons">
           <button onClick={() => setPagina('trabajos')}>Trabajos</button>
           <button onClick={() => setPagina('clientes')}>Clientes</button>
           <button onClick={() => setPagina('estadisticas')}>Estadísticas</button>
