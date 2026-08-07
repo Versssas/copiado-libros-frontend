@@ -90,7 +90,6 @@ function App() {
           <button onClick={() => setPagina('trabajos')}>Trabajos</button>
           <button onClick={() => setPagina('clientes')}>Clientes</button>
           <button onClick={() => setPagina('estadisticas')}>Estadísticas</button>
-          <button onClick={exportarBackup}>💾 Backup</button>
           <button onClick={() => {
             const nuevo = !modoOscuro
             setModoOscuro(nuevo)
@@ -107,6 +106,28 @@ function App() {
         {pagina === 'clientes' && <Clientes clientes={clientes} recargar={cargarDatos} />}
         {pagina === 'estadisticas' && <Estadisticas trabajos={trabajos} />}
       </main>
+
+      <footer style={{
+      padding: '12px 32px',
+      textAlign: 'center',
+      fontSize: '12px',
+      color: 'var(--color-text-tertiary, #aaa)',
+      borderTop: '1px solid var(--color-border-tertiary, #eee)',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center'
+      }}>
+      <span>Copiado de Libros Pergamino © 2026</span>
+      <button onClick={exportarBackup} style={{
+          background: 'none',
+          border: 'none',
+          color: 'var(--color-text-tertiary, #aaa)',
+          cursor: 'pointer',
+          fontSize: '12px'
+      }}>
+          💾 Backup
+      </button>
+  </footer>
     </div>
   )
 }
