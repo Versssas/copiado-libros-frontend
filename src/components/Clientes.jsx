@@ -63,7 +63,6 @@ function Clientes({ clientes, recargar }) {
       <table>
         <thead>
           <tr>
-            <th>ID</th>
             <th>Nombre</th>
             <th>CUIT</th>
             <th>Teléfono</th>
@@ -75,7 +74,7 @@ function Clientes({ clientes, recargar }) {
             <tr key={c.id}>
               {editando === c.id ? (
                 <>
-                  <td>{c.id}</td>
+                  
                   <td><input name="nombre" value={formEditar.nombre} onChange={handleChangeEditar} /></td>
                   <td><input name="cuit" value={formEditar.cuit} onChange={handleChangeEditar} /></td>
                   <td><input name="telefono" value={formEditar.telefono} onChange={handleChangeEditar} /></td>
@@ -86,7 +85,7 @@ function Clientes({ clientes, recargar }) {
                 </>
               ) : (
                 <>
-                  <td>{c.id}</td>
+                 
                   <td>{c.nombre}</td>
                   <td>{c.cuit}</td>
                   <td>{c.telefono}</td>
