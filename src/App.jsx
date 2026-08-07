@@ -84,22 +84,31 @@ function App() {
 
   return (
     <div className="app">
-      <nav>
+        <nav>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <svg width="32" height="32" viewBox="0 0 100 100">
+          <rect x="18" y="20" width="30" height="42" rx="2" fill="#fff" opacity="0.9"/>
+          <rect x="52" y="20" width="30" height="42" rx="2" fill="#fff" opacity="0.7"/>
+          <rect x="46" y="20" width="6" height="42" fill="#fff" opacity="0.5"/>
+          <rect x="20" y="17" width="26" height="4" rx="1" fill="#ddd" opacity="0.6"/>
+          <rect x="54" y="17" width="26" height="4" rx="1" fill="#ddd" opacity="0.6"/>
+        </svg>
         <h1>Copiado de Libros Pergamino</h1>
-        <div className="nav-buttons">
-          <button onClick={() => setPagina('trabajos')}>Trabajos</button>
-          <button onClick={() => setPagina('clientes')}>Clientes</button>
-          <button onClick={() => setPagina('estadisticas')}>Estadísticas</button>
-          <button onClick={() => {
-            const nuevo = !modoOscuro
-            setModoOscuro(nuevo)
-            localStorage.setItem('modo_oscuro', nuevo)
-          }}>
-            {modoOscuro ? '☀️' : '🌙'}
-          </button>
-          <button onClick={handleLogout}>Salir</button>
-        </div>
-      </nav>
+      </div>
+      <div className="nav-buttons">
+        <button onClick={() => setPagina('trabajos')}>Trabajos</button>
+        <button onClick={() => setPagina('clientes')}>Clientes</button>
+        <button onClick={() => setPagina('estadisticas')}>Estadísticas</button>
+        <button onClick={() => {
+          const nuevo = !modoOscuro
+          setModoOscuro(nuevo)
+          localStorage.setItem('modo_oscuro', nuevo)
+        }}>
+          {modoOscuro ? '☀️' : '🌙'}
+        </button>
+        <button onClick={handleLogout}>Salir</button>
+  </div>
+</nav>
 
       <main>
         {pagina === 'trabajos' && <Trabajos trabajos={trabajos} clientes={clientes} recargar={cargarDatos} />}
