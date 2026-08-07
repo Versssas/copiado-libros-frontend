@@ -82,7 +82,17 @@ h2 {
   margin-bottom: 24px;
   border: 1px solid #e8e8f0;
 }
+.form-row select:first-child {
+    max-width: 160px;
+}
 
+.form-row input[type="date"] {
+    max-width: 140px;
+}
+
+.form-row input[type="number"] {
+    max-width: 100px;
+}
 .form-row {
   display: flex;
   gap: 10px;
@@ -232,6 +242,30 @@ tr:last-child td {
 
 tr:hover td {
   background: #fdf5f5;
+}
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #16a34a;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  animation: slideIn 0.3s ease;
+  z-index: 1000;
+}
+
+.toast.error {
+  background: #9b1c1c;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 /* STATS */

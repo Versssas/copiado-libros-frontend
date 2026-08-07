@@ -6,7 +6,7 @@ const getConfig = () => ({
     headers: { authorization: localStorage.getItem('token') }
 })
 
-function Clientes({ clientes, recargar }) {
+function Clientes({ clientes, recargar, mostrarToast }) {
   const [nombre, setNombre] = useState('')
   const [cuit, setCuit] = useState('')
   const [telefono, setTelefono] = useState('')
@@ -15,14 +15,19 @@ function Clientes({ clientes, recargar }) {
 
   const agregarCliente = async () => {
     if (!nombre || !cuit) {
-      alert('Completá todos los campos')
+      mostrarToast('Completá todos los campos', 'error')
       return
     }
-    await axios.post(`${API}/clientes/`, { nombre, cuit, telefono }, getConfig())
-    setNombre('')
-    setCuit('')
-    setTelefono('')
-    recargar()
+    try {
+      await axios.post(`${API}/clientes/`, { nombre, cuit, telefono }, getConfig())
+      setNombre('')
+      setCuit('')
+      setTelefono('')
+      recargar()
+      mostrarToast('Cliente agregado correctamente')
+    } catch (error) {
+      mostrarToast(error.response?.data?.error || 'Error al agregar cliente', 'error')
+    }
   }
 
   const eliminarCliente = async (id) => {
@@ -30,8 +35,9 @@ function Clientes({ clientes, recargar }) {
     try {
       await axios.delete(`${API}/clientes/${id}`, getConfig())
       recargar()
+      mostrarToast('Cliente eliminado')
     } catch (error) {
-      alert('No se puede eliminar un cliente con trabajos asociados')
+      mostrarToast('No se puede eliminar un cliente con trabajos asociados', 'error')
     }
   }
 
@@ -44,6 +50,7 @@ function Clientes({ clientes, recargar }) {
     await axios.put(`${API}/clientes/${editando}`, formEditar, getConfig())
     setEditando(null)
     recargar()
+    mostrarToast('Cliente actualizado correctamente')
   }
 
   const handleChangeEditar = (e) => {
@@ -59,47 +66,45 @@ function Clientes({ clientes, recargar }) {
         <input placeholder="Teléfono" value={telefono} onChange={e => setTelefono(e.target.value)} />
         <button type="button" className="agregar" onClick={agregarCliente}>Agregar</button>
       </div>
-    <div className="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>CUIT</th>
-            <th>Teléfono</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {clientes.map(c => (
-            <tr key={c.id}>
-              {editando === c.id ? (
-                <>
-                  
-                  <td><input name="nombre" value={formEditar.nombre} onChange={handleChangeEditar} /></td>
-                  <td><input name="cuit" value={formEditar.cuit} onChange={handleChangeEditar} /></td>
-                  <td><input name="telefono" value={formEditar.telefono} onChange={handleChangeEditar} /></td>
-                  <td>
-                    <button type="button" className="editar" onClick={guardarEdicion}>Guardar</button>
-                    <button type="button" className="eliminar" onClick={() => setEditando(null)}>Cancelar</button>
-                  </td>
-                </>
-              ) : (
-                <>
-                 
-                  <td>{c.nombre}</td>
-                  <td>{c.cuit}</td>
-                  <td>{c.telefono}</td>
-                  <td>
-                    <button type="button" className="editar" onClick={() => empezarEdicion(c)}>Editar</button>
-                    <button type="button" className="eliminar" onClick={() => eliminarCliente(c.id)}>Eliminar</button>
-                  </td>
-                </>
-              )}
+      <div className="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>CUIT</th>
+              <th>Teléfono</th>
+              <th>Acciones</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>  
+          </thead>
+          <tbody>
+            {clientes.map(c => (
+              <tr key={c.id}>
+                {editando === c.id ? (
+                  <>
+                    <td><input name="nombre" value={formEditar.nombre} onChange={handleChangeEditar} /></td>
+                    <td><input name="cuit" value={formEditar.cuit} onChange={handleChangeEditar} /></td>
+                    <td><input name="telefono" value={formEditar.telefono} onChange={handleChangeEditar} /></td>
+                    <td>
+                      <button type="button" className="editar" onClick={guardarEdicion}>Guardar</button>
+                      <button type="button" className="eliminar" onClick={() => setEditando(null)}>Cancelar</button>
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    <td>{c.nombre}</td>
+                    <td>{c.cuit}</td>
+                    <td>{c.telefono}</td>
+                    <td>
+                      <button type="button" className="editar" onClick={() => empezarEdicion(c)}>Editar</button>
+                      <button type="button" className="eliminar" onClick={() => eliminarCliente(c.id)}>Eliminar</button>
+                    </td>
+                  </>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

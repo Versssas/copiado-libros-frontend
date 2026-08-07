@@ -30,7 +30,13 @@ function App() {
   useEffect(() => {
     if (logueado) cargarDatos()
   }, [logueado])
+  
+  const [toast, setToast] = useState(null)
 
+  const mostrarToast = (mensaje, tipo = 'success') => {
+      setToast({ mensaje, tipo })
+      setTimeout(() => setToast(null), 3000)
+}
   const cargarDatos = async () => {
     setCargando(true)
     try {
@@ -86,7 +92,7 @@ function App() {
     <div className="app">
         <nav>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <svg width="32" height="32" viewBox="0 0 100 100">
+        <svg width="42" height="42" viewBox="0 0 100 100">
           <rect x="18" y="20" width="30" height="42" rx="2" fill="#fff" opacity="0.9"/>
           <rect x="52" y="20" width="30" height="42" rx="2" fill="#fff" opacity="0.7"/>
           <rect x="46" y="20" width="6" height="42" fill="#fff" opacity="0.5"/>
@@ -111,9 +117,8 @@ function App() {
 </nav>
 
       <main>
-        {pagina === 'trabajos' && <Trabajos trabajos={trabajos} clientes={clientes} recargar={cargarDatos} />}
-        {pagina === 'clientes' && <Clientes clientes={clientes} recargar={cargarDatos} />}
-        {pagina === 'estadisticas' && <Estadisticas trabajos={trabajos} />}
+        {pagina === 'trabajos' && <Trabajos trabajos={trabajos} clientes={clientes} recargar={cargarDatos} mostrarToast={mostrarToast} />}
+{pagina === 'clientes' && <Clientes clientes={clientes} recargar={cargarDatos} mostrarToast={mostrarToast} />}{pagina === 'estadisticas' && <Estadisticas trabajos={trabajos} />}
       </main>
 
       <footer style={{
@@ -137,6 +142,11 @@ function App() {
           💾 Backup
       </button>
   </footer>
+      {toast && (
+    <div className={`toast ${toast.tipo === 'error' ? 'error' : ''}`}>
+        {toast.mensaje}
+    </div>
+)}
     </div>
   )
 }

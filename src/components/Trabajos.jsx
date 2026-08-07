@@ -6,11 +6,11 @@ const getConfig = () => ({
     headers: { authorization: localStorage.getItem('token') }
 })
 
-function Trabajos({ trabajos, clientes, recargar }) {
+function Trabajos({ trabajos, clientes, recargar, mostrarToast }) {
   const [form, setForm] = useState({
     cliente_id: '',
     nro_factura: '',
-    fecha: '',
+    fecha: '', 
     fecha_entrega: '',
     hojas: '',
     precio_hoja: localStorage.getItem('ultimo_precio') || '',
@@ -45,7 +45,7 @@ function Trabajos({ trabajos, clientes, recargar }) {
 
   const agregarTrabajo = async () => {
     if (!form.cliente_id || !form.fecha || !form.fecha_entrega || !form.hojas || !form.precio_hoja) {
-      alert('Completá todos los campos')
+      mostrarToast('Completá todos los campos')
       return
     }
     const total = form.hojas * form.precio_hoja
@@ -56,7 +56,7 @@ function Trabajos({ trabajos, clientes, recargar }) {
       setForm({ cliente_id: '', nro_factura: '', fecha: '', fecha_entrega: '', hojas: '', precio_hoja: localStorage.getItem('ultimo_precio') || '', estado: 'Pendiente', iva: false })
       recargar()
     } catch (error) {
-      alert(error.response?.data?.error || 'Error al guardar el trabajo')
+      mostrarToast(error.response?.data?.error || 'Error al guardar el trabajo')
     }
   }
 
@@ -64,6 +64,7 @@ function Trabajos({ trabajos, clientes, recargar }) {
     if (!confirm('¿Seguro que querés eliminar este trabajo?')) return
     await axios.delete(`${API}/trabajos/${id}`, getConfig())
     recargar()
+    mostrarToast('Trabajo eliminado')
   }
 
   const formatearFecha = (fecha) => {
@@ -95,6 +96,7 @@ function Trabajos({ trabajos, clientes, recargar }) {
     await axios.put(`${API}/trabajos/${editando}`, { ...formEditar, total, total_con_iva }, getConfig())
     setEditando(null)
     recargar()
+    mostrarToast('Trabajo actualizado correctamente')
   }
 
   const handleChangeEditar = (e) => {
@@ -159,7 +161,7 @@ function Trabajos({ trabajos, clientes, recargar }) {
           <input type="date" name="fecha" value={form.fecha} onChange={handleChange} />
           <input type="date" name="fecha_entrega" value={form.fecha_entrega} onChange={handleChange} />
           <input type="number" name="hojas" placeholder="Hojas" value={form.hojas} onChange={handleChange} />
-          <input type="number" name="precio_hoja" placeholder="Precio por hoja" value={form.precio_hoja} onChange={handleChange} />
+          <input type="number" name="precio_hoja" placeholder="Precio" value={form.precio_hoja} onChange={handleChange} />
           <select name="estado" value={form.estado} onChange={handleChange}>
             <option>Pendiente</option>
             <option>En proceso</option>
