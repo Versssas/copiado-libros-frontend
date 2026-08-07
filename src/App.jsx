@@ -34,14 +34,15 @@ function App() {
   const cargarDatos = async () => {
     setCargando(true)
     try {
-      const [resTrabajos, resClientes] = await Promise.all([
-        axios.get(`${API}/trabajos/`, getConfig()),
-        axios.get(`${API}/clientes/`, getConfig())
-      ])
-      setTrabajos(resTrabajos.data)
-      setClientes(resClientes.data)
+        const [resTrabajos, resClientes] = await Promise.all([
+            axios.get(`${API}/trabajos/`, getConfig()),
+            axios.get(`${API}/clientes/`, getConfig())
+        ])
+        setTrabajos(resTrabajos.data)
+        setClientes(resClientes.data)
     } catch (error) {
-      console.error(error)
+        localStorage.removeItem('token')
+        setLogueado(false)
     }
     setCargando(false)
   }
