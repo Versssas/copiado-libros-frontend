@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import axios from 'axios'
 import { createPortal } from 'react-dom'
+import { generarFacturaPDF } from './FacturaPDF'
 
 const API = 'https://copiado-libros-backend-production.up.railway.app'
 const getConfig = () => ({
@@ -56,6 +57,27 @@ const confirmarFactura = async (tipo) => {
             trabajo_id: modalFactura,
             tipo_factura: tipo
         }, getConfig())
+        
+        const trabajo = trabajos.find(t => t.id === modalFactura)
+        const total = trabajo.iva ? Number(trabajo.total_con_iva) : Number(trabajo.total)
+        const neto = Number(trabajo.total)
+        const iva = trabajo.iva ? total - neto : 0
+        
+        await generarFacturaPDF({
+            tipo,
+            nro_comprobante: res.data.nro_comprobante,
+            fecha: new Date().toLocaleDateString('es-AR'),
+            cliente: trabajo.cliente_nombre,
+            cuit_cliente: trabajo.cliente_cuit || '',
+            hojas: trabajo.hojas,
+            precio_hoja: trabajo.precio_hoja,
+            neto,
+            iva,
+            total,
+            cae: res.data.cae,
+            cae_vencimiento: res.data.vencimiento
+        })
+
         setModalFactura(null)
         mostrarToast(`Factura emitida! CAE: ${res.data.cae}`)
         recargar()
@@ -259,6 +281,7 @@ const confirmarFactura = async (tipo) => {
         <td>
             <button type="button" className="editar" onClick={() => empezarEdicion(t)}>Editar</button>
             <button type="button" className="eliminar" onClick={() => eliminarTrabajo(t.id)}>Eliminar</button>
+            <button type="button" className="factura" onClick={() => emitirFactura(t.id)}>Facturar</button>       
         </td>
     </tr>
 ))}
