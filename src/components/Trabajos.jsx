@@ -33,7 +33,8 @@ function Trabajos({ trabajos, clientes, recargar, mostrarToast }) {
   const [busqueda, setBusqueda] = useState('')
   const [orden, setOrden] = useState({ campo: 'id', direccion: 'asc' })
   const [filtroEstado, setFiltroEstado] = useState('')
-
+  const [previewFactura, setPreviewFactura] = useState(null)
+  
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
@@ -51,34 +52,42 @@ const emitirFactura = (id) => {
     setModalFactura(id)
 }
 
-const confirmarFactura = async (tipo) => {
+const seleccionarTipoFactura = (tipo) => {
+    const trabajo = trabajos.find(t => t.id === modalFactura)
+    const total = trabajo.iva ? Number(trabajo.total_con_iva) : Number(trabajo.total)
+    const neto = Number(trabajo.total)
+    const iva = trabajo.iva ? total - neto : 0
+    
+    setPreviewFactura({
+        trabajo_id: modalFactura,
+        tipo,
+        cliente: trabajo.cliente_nombre,
+        cuit_cliente: trabajo.cliente_cuit || '',
+        hojas: trabajo.hojas,
+        precio_hoja: trabajo.precio_hoja,
+        neto,
+        iva,
+        total,
+        fecha: new Date().toLocaleDateString('es-AR')
+    })
+    setModalFactura(null)
+}
+
+const confirmarFactura = async () => {
     try {
         const res = await axios.post(`${API}/facturas/emitir`, {
-            trabajo_id: modalFactura,
-            tipo_factura: tipo
+            trabajo_id: previewFactura.trabajo_id,
+            tipo_factura: previewFactura.tipo
         }, getConfig())
         
-        const trabajo = trabajos.find(t => t.id === modalFactura)
-        const total = trabajo.iva ? Number(trabajo.total_con_iva) : Number(trabajo.total)
-        const neto = Number(trabajo.total)
-        const iva = trabajo.iva ? total - neto : 0
-        
         await generarFacturaPDF({
-            tipo,
+            ...previewFactura,
             nro_comprobante: res.data.nro_comprobante,
-            fecha: new Date().toLocaleDateString('es-AR'),
-            cliente: trabajo.cliente_nombre,
-            cuit_cliente: trabajo.cliente_cuit || '',
-            hojas: trabajo.hojas,
-            precio_hoja: trabajo.precio_hoja,
-            neto,
-            iva,
-            total,
             cae: res.data.cae,
             cae_vencimiento: res.data.vencimiento
         })
 
-        setModalFactura(null)
+        setPreviewFactura(null)
         mostrarToast(`Factura emitida! CAE: ${res.data.cae}`)
         recargar()
     } catch (error) {
@@ -353,12 +362,84 @@ const confirmarFactura = async (tipo) => {
             <h3>Tipo de Factura</h3>
             <p style={{ color: '#888', marginBottom: '20px', fontSize: '14px' }}>Seleccioná el tipo de comprobante</p>
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-                <button type="button" className="agregar" onClick={() => confirmarFactura(1)}>Factura A</button>
-                <button type="button" className="agregar" onClick={() => confirmarFactura(6)}>Factura B</button>
-                <button type="button" className="agregar" onClick={() => confirmarFactura(11)}>Factura C</button>
+                <button type="button" className="agregar" onClick={() => seleccionarTipoFactura(1)}>Factura A</button>
+                <button type="button" className="agregar" onClick={() => SeleccionarTipoFactura(6)}>Factura B</button>
+                <button type="button" className="agregar" onClick={() => SeleccionarTipoFactura(11)}>Factura C</button>
             </div>
             <div style={{ marginTop: '16px' }}>
                 <button type="button" className="eliminar" onClick={() => setModalFactura(null)}>Cancelar</button>
+            </div>
+        </div>
+    </>,
+    document.body
+)}
+{previewFactura && createPortal(
+    <>
+        <div className="editing-overlay" onClick={() => setPreviewFactura(null)} />
+        <div className="editing-modal" style={{ width: '500px' }}>
+            <h3>Preview de Factura {previewFactura.tipo === 1 ? 'A' : previewFactura.tipo === 6 ? 'B' : 'C'}</h3>
+            
+            <div style={{ border: '1px solid #ddd', borderRadius: '8px', padding: '16px', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                    <div>
+                        <p style={{ fontWeight: 600 }}>Copiado de Libros Pergamino</p>
+                        <p style={{ fontSize: '13px', color: '#888' }}>CUIT: 20-14345554-9</p>
+                        <p style={{ fontSize: '13px', color: '#888' }}>Estrada 1248, Pergamino</p>
+                    </div>
+                    <div style={{ textAlign: 'center', border: '2px solid #9b1c1c', borderRadius: '8px', padding: '8px 16px' }}>
+                        <p style={{ fontSize: '32px', fontWeight: 700, color: '#9b1c1c' }}>
+                            {previewFactura.tipo === 1 ? 'A' : previewFactura.tipo === 6 ? 'B' : 'C'}
+                        </p>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                        <p style={{ fontSize: '13px' }}>Pto. Venta: 00005</p>
+                        <p style={{ fontSize: '13px' }}>Fecha: {previewFactura.fecha}</p>
+                    </div>
+                </div>
+
+                <hr style={{ marginBottom: '12px' }} />
+
+                <div style={{ marginBottom: '12px' }}>
+                    <p style={{ fontWeight: 600, marginBottom: '4px' }}>Receptor</p>
+                    <p style={{ fontSize: '13px' }}>{previewFactura.cliente}</p>
+                    <p style={{ fontSize: '13px', color: '#888' }}>CUIT: {previewFactura.cuit_cliente}</p>
+                </div>
+
+                <hr style={{ marginBottom: '12px' }} />
+
+                <table style={{ width: '100%', fontSize: '13px', marginBottom: '12px' }}>
+                    <thead>
+                        <tr style={{ borderBottom: '1px solid #ddd' }}>
+                            <th style={{ textAlign: 'left', paddingBottom: '4px' }}>Descripción</th>
+                            <th style={{ textAlign: 'right' }}>Hojas</th>
+                            <th style={{ textAlign: 'right' }}>Precio</th>
+                            <th style={{ textAlign: 'right' }}>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Servicio de copiado</td>
+                            <td style={{ textAlign: 'right' }}>{previewFactura.hojas}</td>
+                            <td style={{ textAlign: 'right' }}>${Number(previewFactura.precio_hoja).toLocaleString('es-AR')}</td>
+                            <td style={{ textAlign: 'right' }}>${Number(previewFactura.neto).toLocaleString('es-AR')}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <hr style={{ marginBottom: '8px' }} />
+
+                <div style={{ textAlign: 'right', fontSize: '13px' }}>
+                    <p>Subtotal neto: ${Number(previewFactura.neto).toLocaleString('es-AR')}</p>
+                    {previewFactura.iva > 0 && <p>IVA 21%: ${Number(previewFactura.iva).toLocaleString('es-AR')}</p>}
+                    <p style={{ fontWeight: 700, fontSize: '16px', marginTop: '4px' }}>
+                        Total: ${Number(previewFactura.total).toLocaleString('es-AR')}
+                    </p>
+                </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                <button type="button" className="eliminar" onClick={() => setPreviewFactura(null)}>Cancelar</button>
+                <button type="button" className="agregar" onClick={confirmarFactura}>Emitir Factura</button>
             </div>
         </div>
     </>,
