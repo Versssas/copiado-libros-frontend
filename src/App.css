@@ -599,7 +599,8 @@ body.dark .login-box {
   color: #e8e8f0;
 }
 
-button.factura {
+button.factura,
+select.factura {
   background: #1a6b3a;
   color: white;
   border: none;
@@ -612,6 +613,12 @@ button.factura {
   margin-left: 4px;
 }
 
-button.factura:hover {
+button.factura:hover,
+select.factura:hover {
   background: #145230;
+}
+
+select.factura option {
+  background: white;
+  color: #222;
 }

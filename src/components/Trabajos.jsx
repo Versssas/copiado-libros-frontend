@@ -49,6 +49,11 @@ function Trabajos({ trabajos, clientes, recargar, mostrarToast }) {
   const [modalFactura, setModalFactura] = useState(null)
 
 const emitirFactura = (id) => {
+    const trabajo = trabajos.find(t => t.id === id)
+    if (trabajo.nro_factura && !trabajo.anulada) {
+        mostrarToast('Este trabajo ya tiene una factura vigente. Anulala con nota de crédito antes de generar una nueva.', 'error')
+        return
+    }
     setModalFactura(id)
 }
 
@@ -96,16 +101,27 @@ const confirmarFactura = async () => {
 }
 
   const [trabajoAAnular, setTrabajoAAnular] = useState(null)
+  const [modalTipoAnular, setModalTipoAnular] = useState(null)
 
   const anularFactura = (trabajo) => {
+    if (!trabajo.tipo_factura) {
+        setModalTipoAnular(trabajo)
+        return
+    }
     setTrabajoAAnular(trabajo)
+  }
+
+  const seleccionarTipoAnular = (tipo) => {
+    setTrabajoAAnular({ ...modalTipoAnular, tipo_factura: tipo })
+    setModalTipoAnular(null)
   }
 
   const confirmarAnulacion = async () => {
     const trabajo = trabajoAAnular
     try {
         const res = await axios.post(`${API}/facturas/anular`, {
-            trabajo_id: trabajo.id
+            trabajo_id: trabajo.id,
+            tipo_factura_original: trabajo.tipo_factura
         }, getConfig())
 
         const tipoNC = trabajo.tipo_factura === 1 ? 3 : trabajo.tipo_factura === 6 ? 8 : 13
@@ -348,11 +364,20 @@ const confirmarFactura = async () => {
         <td>
             <button type="button" className="editar" onClick={() => empezarEdicion(t)}>Editar</button>
             <button type="button" className="eliminar" onClick={() => eliminarTrabajo(t.id)}>Eliminar</button>
-            {t.nro_factura && !t.anulada ? (
-                <button type="button" className="eliminar" onClick={() => anularFactura(t)}>Anular Factura</button>
-            ) : (
-                <button type="button" className="factura" onClick={() => emitirFactura(t.id)}>Facturar</button>
-            )}
+            <select
+                className="factura"
+                value=""
+                onChange={e => {
+                    const accion = e.target.value
+                    if (accion === 'facturar') emitirFactura(t.id)
+                    if (accion === 'anular') anularFactura(t)
+                    e.target.value = ''
+                }}
+            >
+                <option value="" disabled>Facturación</option>
+                <option value="facturar">Generar factura</option>
+                <option value="anular" disabled={!t.nro_factura || t.anulada}>Nota de crédito</option>
+            </select>
         </td>
     </tr>
 ))}
@@ -502,6 +527,26 @@ const confirmarFactura = async () => {
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
                 <button type="button" className="eliminar" onClick={() => setPreviewFactura(null)}>Cancelar</button>
                 <button type="button" className="agregar" onClick={confirmarFactura}>Emitir Factura</button>
+            </div>
+        </div>
+    </>,
+    document.body
+)}
+{modalTipoAnular && createPortal(
+    <>
+        <div className="editing-overlay" onClick={() => setModalTipoAnular(null)} />
+        <div className="editing-modal" style={{ width: '340px', textAlign: 'center' }}>
+            <h3>Tipo de Factura Original</h3>
+            <p style={{ color: '#888', marginBottom: '20px', fontSize: '14px' }}>
+                Este trabajo no tiene registrado el tipo de comprobante. ¿Qué tipo de factura fue la N° {modalTipoAnular.nro_factura} de {modalTipoAnular.cliente_nombre}?
+            </p>
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                <button type="button" className="agregar" onClick={() => seleccionarTipoAnular(1)}>Factura A</button>
+                <button type="button" className="agregar" onClick={() => seleccionarTipoAnular(6)}>Factura B</button>
+                <button type="button" className="agregar" onClick={() => seleccionarTipoAnular(11)}>Factura C</button>
+            </div>
+            <div style={{ marginTop: '16px' }}>
+                <button type="button" className="eliminar" onClick={() => setModalTipoAnular(null)}>Cancelar</button>
             </div>
         </div>
     </>,
