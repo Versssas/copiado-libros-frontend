@@ -79,7 +79,7 @@ const confirmarFactura = async () => {
             trabajo_id: previewFactura.trabajo_id,
             tipo_factura: previewFactura.tipo
         }, getConfig())
-        
+
         await generarFacturaPDF({
             ...previewFactura,
             nro_comprobante: res.data.nro_comprobante,
@@ -94,6 +94,50 @@ const confirmarFactura = async () => {
         mostrarToast(error.response?.data?.error || 'Error al emitir factura', 'error')
     }
 }
+
+  const [trabajoAAnular, setTrabajoAAnular] = useState(null)
+
+  const anularFactura = (trabajo) => {
+    setTrabajoAAnular(trabajo)
+  }
+
+  const confirmarAnulacion = async () => {
+    const trabajo = trabajoAAnular
+    try {
+        const res = await axios.post(`${API}/facturas/anular`, {
+            trabajo_id: trabajo.id
+        }, getConfig())
+
+        const tipoNC = trabajo.tipo_factura === 1 ? 3 : trabajo.tipo_factura === 6 ? 8 : 13
+        const letraOriginal = trabajo.tipo_factura === 1 ? 'A' : trabajo.tipo_factura === 6 ? 'B' : 'C'
+        const total = trabajo.iva ? Number(trabajo.total_con_iva) : Number(trabajo.total)
+        const neto = Number(trabajo.total)
+        const iva = trabajo.iva ? total - neto : 0
+
+        await generarFacturaPDF({
+            tipo: tipoNC,
+            nro_comprobante: res.data.nro_comprobante,
+            fecha: new Date().toLocaleDateString('es-AR'),
+            cliente: trabajo.cliente_nombre,
+            cuit_cliente: trabajo.cliente_cuit || '',
+            hojas: trabajo.hojas,
+            precio_hoja: trabajo.precio_hoja,
+            neto,
+            iva,
+            total,
+            cae: res.data.cae,
+            cae_vencimiento: res.data.vencimiento,
+            tipoComprobante: 'NOTA DE CRÉDITO',
+            comprobanteAsociado: `Comp. asociado: Factura ${letraOriginal} N° ${trabajo.nro_factura}`
+        })
+
+        setTrabajoAAnular(null)
+        mostrarToast(`Factura anulada! Nota de crédito CAE: ${res.data.cae}`)
+        recargar()
+    } catch (error) {
+        mostrarToast(error.response?.data?.error || 'Error al anular la factura', 'error')
+    }
+  }
 
   const agregarTrabajo = async () => {
     if (!form.cliente_id || !form.fecha || !form.fecha_entrega || !form.hojas || !form.precio_hoja) {
@@ -263,7 +307,21 @@ const confirmarFactura = async () => {
         <tbody>
           {trabajosFiltrados.map(t => (
     <tr key={t.id}>
-        <td>{t.nro_factura || '-'}</td>
+        <td>
+            {t.nro_factura || '-'}
+            {t.anulada && (
+                <span style={{
+                    marginLeft: '6px',
+                    background: '#c0392b',
+                    color: 'white',
+                    padding: '1px 8px',
+                    borderRadius: '12px',
+                    fontSize: '11px'
+                }}>
+                    Anulada
+                </span>
+            )}
+        </td>
         <td>{t.cliente_nombre}</td>
         <td>{formatearFecha(t.fecha)}</td>
         <td>{formatearFecha(t.fecha_entrega)}</td>
@@ -290,7 +348,11 @@ const confirmarFactura = async () => {
         <td>
             <button type="button" className="editar" onClick={() => empezarEdicion(t)}>Editar</button>
             <button type="button" className="eliminar" onClick={() => eliminarTrabajo(t.id)}>Eliminar</button>
-            <button type="button" className="factura" onClick={() => emitirFactura(t.id)}>Facturar</button>       
+            {t.nro_factura && !t.anulada ? (
+                <button type="button" className="eliminar" onClick={() => anularFactura(t)}>Anular Factura</button>
+            ) : (
+                <button type="button" className="factura" onClick={() => emitirFactura(t.id)}>Facturar</button>
+            )}
         </td>
     </tr>
 ))}
@@ -363,8 +425,8 @@ const confirmarFactura = async () => {
             <p style={{ color: '#888', marginBottom: '20px', fontSize: '14px' }}>Seleccioná el tipo de comprobante</p>
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
                 <button type="button" className="agregar" onClick={() => seleccionarTipoFactura(1)}>Factura A</button>
-                <button type="button" className="agregar" onClick={() => SeleccionarTipoFactura(6)}>Factura B</button>
-                <button type="button" className="agregar" onClick={() => SeleccionarTipoFactura(11)}>Factura C</button>
+                <button type="button" className="agregar" onClick={() => seleccionarTipoFactura(6)}>Factura B</button>
+                <button type="button" className="agregar" onClick={() => seleccionarTipoFactura(11)}>Factura C</button>
             </div>
             <div style={{ marginTop: '16px' }}>
                 <button type="button" className="eliminar" onClick={() => setModalFactura(null)}>Cancelar</button>
@@ -440,6 +502,25 @@ const confirmarFactura = async () => {
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
                 <button type="button" className="eliminar" onClick={() => setPreviewFactura(null)}>Cancelar</button>
                 <button type="button" className="agregar" onClick={confirmarFactura}>Emitir Factura</button>
+            </div>
+        </div>
+    </>,
+    document.body
+)}
+{trabajoAAnular && createPortal(
+    <>
+        <div className="editing-overlay" onClick={() => setTrabajoAAnular(null)} />
+        <div className="editing-modal" style={{ width: '380px', textAlign: 'center' }}>
+            <h3>Anular Factura</h3>
+            <p style={{ color: '#888', marginBottom: '8px', fontSize: '14px' }}>
+                Se emitirá una Nota de Crédito para anular la Factura {trabajoAAnular.tipo_factura === 1 ? 'A' : trabajoAAnular.tipo_factura === 6 ? 'B' : 'C'} N° {trabajoAAnular.nro_factura} de {trabajoAAnular.cliente_nombre}.
+            </p>
+            <p style={{ color: '#c0392b', marginBottom: '20px', fontSize: '13px' }}>
+                Esta acción no se puede deshacer.
+            </p>
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                <button type="button" className="eliminar" onClick={() => setTrabajoAAnular(null)}>Cancelar</button>
+                <button type="button" className="agregar" onClick={confirmarAnulacion}>Confirmar Anulación</button>
             </div>
         </div>
     </>,

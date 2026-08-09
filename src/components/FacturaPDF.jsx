@@ -1,10 +1,15 @@
 import jsPDF from 'jspdf'
 import QRCode from 'qrcode'
 
-export async function generarFacturaPDF(datos) {
-    const { tipo, nro_comprobante, fecha, cliente, cuit_cliente, hojas, precio_hoja, neto, iva, total, cae, cae_vencimiento } = datos
+const LETRA_POR_TIPO = { 1: 'A', 2: 'A', 3: 'A', 6: 'B', 7: 'B', 8: 'B', 11: 'C', 12: 'C', 13: 'C' }
 
-    const tipoNombre = tipo === 1 ? 'A' : tipo === 6 ? 'B' : 'C'
+export async function generarFacturaPDF(datos) {
+    const {
+        tipo, nro_comprobante, fecha, cliente, cuit_cliente, hojas, precio_hoja, neto, iva, total, cae, cae_vencimiento,
+        tipoComprobante = 'FACTURA', comprobanteAsociado
+    } = datos
+
+    const tipoNombre = LETRA_POR_TIPO[tipo] || 'C'
     const doc = new jsPDF()
 
     // Marco exterior
@@ -35,6 +40,13 @@ export async function generarFacturaPDF(datos) {
     doc.text(`Punto de Venta: 00005`, 130, 20)
     doc.text(`Comp. Nro: ${String(nro_comprobante).padStart(8, '0')}`, 130, 27)
     doc.text(`Fecha: ${fecha}`, 130, 34)
+
+    doc.setFont('helvetica', 'bold')
+    doc.text(tipoComprobante, 130, 41)
+    doc.setFont('helvetica', 'normal')
+    if (comprobanteAsociado) {
+        doc.text(comprobanteAsociado, 130, 47)
+    }
 
     // Línea separadora
     doc.line(10, 60, 200, 60)
@@ -109,5 +121,6 @@ export async function generarFacturaPDF(datos) {
     const qrDataUrl = await QRCode.toDataURL(qrData, { width: 80 })
     doc.addImage(qrDataUrl, 'PNG', 155, 240, 40, 40)
 
-    doc.save(`factura-${tipoNombre}-${nro_comprobante}.pdf`)
+    const prefijoArchivo = tipoComprobante === 'FACTURA' ? 'factura' : 'nota-credito'
+    doc.save(`${prefijoArchivo}-${tipoNombre}-${nro_comprobante}.pdf`)
 }
