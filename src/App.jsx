@@ -47,8 +47,12 @@ function App() {
         setTrabajos(resTrabajos.data)
         setClientes(resClientes.data)
     } catch (error) {
-        localStorage.removeItem('token')
-        setLogueado(false)
+        if (error.response?.status === 401) {
+            localStorage.removeItem('token')
+            setLogueado(false)
+        } else {
+            mostrarToast('No se pudo conectar con el servidor', 'error')
+        }
     }
     setCargando(false)
   }
