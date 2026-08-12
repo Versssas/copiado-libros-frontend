@@ -565,6 +565,12 @@ body.dark .editing-modal h3 {
   margin: 0;
 }
 
+.login-box form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .login-box input {
   width: 100%;
   padding: 12px;

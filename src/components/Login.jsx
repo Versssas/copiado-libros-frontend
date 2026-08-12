@@ -8,7 +8,8 @@ function Login({ onLogin }) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault()
     try {
       const res = await axios.post(`${API}/auth/login`, { usuario, password })
       localStorage.setItem('token', res.data.token)
@@ -24,19 +25,23 @@ function Login({ onLogin }) {
         <h1>Copiado de Libros</h1>
         <h2>Pergamino</h2>
         {error && <p className="error">{error}</p>}
-        <input
-          type="text"
-          placeholder="Usuario"
-          value={usuario}
-          onChange={e => setUsuario(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-        />
-        <button type="button" onClick={handleLogin}>Ingresar</button>
+        <form onSubmit={handleLogin}>
+          <input
+            type="text"
+            placeholder="Usuario"
+            autoComplete="username"
+            value={usuario}
+            onChange={e => setUsuario(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Contraseña"
+            autoComplete="current-password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+          />
+          <button type="submit">Ingresar</button>
+        </form>
       </div>
     </div>
   )
