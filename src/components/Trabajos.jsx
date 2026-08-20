@@ -31,9 +31,10 @@ function Trabajos({ trabajos, clientes, recargar, mostrarToast }) {
     iva: false
   })
   const [busqueda, setBusqueda] = useState('')
-  const [orden, setOrden] = useState({ campo: 'id', direccion: 'asc' })
+  const [orden, setOrden] = useState({ campo: 'id', direccion: 'desc' })
   const [filtroEstado, setFiltroEstado] = useState('')
   const [previewFactura, setPreviewFactura] = useState(null)
+  const [visibleCount, setVisibleCount] = useState(15)
   
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -241,6 +242,8 @@ const confirmarFactura = async () => {
       return 0
     })
 
+  const trabajosVisibles = trabajosFiltrados.slice(0, visibleCount)
+
   return (
     <div>
       <h2>Trabajos</h2>
@@ -249,10 +252,10 @@ const confirmarFactura = async () => {
           type="text"
           placeholder="Buscar por cliente o nro. factura..."
           value={busqueda}
-          onChange={e => setBusqueda(e.target.value)}
+          onChange={e => { setBusqueda(e.target.value); setVisibleCount(15) }}
           style={{ width: '300px' }}
         />
-        <select value={filtroEstado} onChange={e => setFiltroEstado(e.target.value)}>
+        <select value={filtroEstado} onChange={e => { setFiltroEstado(e.target.value); setVisibleCount(15) }}>
           <option value="">Todos los estados</option>
           <option>Pendiente</option>
         
@@ -321,7 +324,7 @@ const confirmarFactura = async () => {
           </tr>
         </thead>
         <tbody>
-          {trabajosFiltrados.map(t => (
+          {trabajosVisibles.map(t => (
     <tr key={t.id}>
         <td>
             {t.nro_factura || '-'}
@@ -385,6 +388,13 @@ const confirmarFactura = async () => {
         </tbody>
       </table>
       </div>
+      {trabajosFiltrados.length > visibleCount && (
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
+          <button type="button" className="editar" onClick={() => setVisibleCount(v => v + 15)}>
+            Cargar más ({trabajosFiltrados.length - visibleCount} restantes)
+          </button>
+        </div>
+      )}
       {editando && createPortal(
     <>
         <div className="editing-overlay" onClick={() => setEditando(null)} />
