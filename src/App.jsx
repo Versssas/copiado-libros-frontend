@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import * as XLSX from 'xlsx'
 import Clientes from './components/Clientes'
 import Trabajos from './components/Trabajos'
 import Login from './components/Login'
@@ -79,8 +80,6 @@ function App() {
   }
 
   const exportarBackup = () => {
-    const XLSX = require('xlsx')
-    
     const wsTrabajos = XLSX.utils.json_to_sheet(trabajos)
     const wsClientes = XLSX.utils.json_to_sheet(clientes)
     
