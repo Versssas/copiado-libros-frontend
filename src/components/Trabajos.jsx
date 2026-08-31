@@ -255,13 +255,18 @@ const confirmarFactura = async () => {
           onChange={e => { setBusqueda(e.target.value); setVisibleCount(15) }}
           style={{ width: '300px' }}
         />
-        <select value={filtroEstado} onChange={e => { setFiltroEstado(e.target.value); setVisibleCount(15) }}>
-          <option value="">Todos los estados</option>
-          <option>Pendiente</option>
-        
-          <option>Entregado</option>
-          <option>Cobrado</option>
-        </select>
+        <div className="filtro-estado-tabs" role="group" aria-label="Filtrar por estado">
+          {['', 'Pendiente', 'Entregado', 'Cobrado'].map(opcion => (
+            <button
+              key={opcion || 'todos'}
+              type="button"
+              className={filtroEstado === opcion ? 'activo' : ''}
+              onClick={() => { setFiltroEstado(opcion); setVisibleCount(15) }}
+            >
+              {opcion || 'Todos'}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="form-card">
@@ -277,12 +282,14 @@ const confirmarFactura = async () => {
           <input type="date" name="fecha_entrega" value={form.fecha_entrega} onChange={handleChange} />
           <input type="number" name="hojas" placeholder="Hojas" value={form.hojas} onChange={handleChange} />
           <input type="number" name="precio_hoja" placeholder="Precio" value={form.precio_hoja} onChange={handleChange} />
-          <select name="estado" value={form.estado} onChange={handleChange}>
-            <option>Pendiente</option>
-           
-            <option>Entregado</option>
-            <option>Cobrado</option>
-          </select>
+          <label className="estado-inicial-label">
+            Estado inicial
+            <select name="estado" value={form.estado} onChange={handleChange}>
+              <option>Pendiente</option>
+              <option>Entregado</option>
+              <option>Cobrado</option>
+            </select>
+          </label>
           <label style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <input
               type="checkbox"
