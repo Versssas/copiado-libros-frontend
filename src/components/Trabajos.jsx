@@ -247,13 +247,13 @@ const confirmarFactura = async () => {
   return (
     <div>
       <h2>Trabajos</h2>
-      <div style={{ display: 'flex', gap: '10px', marginBottom: '16px' }}>
+      <div className="barra-filtros" style={{ display: 'flex', gap: '10px', marginBottom: '16px', flexWrap: 'wrap' }}>
         <input
           type="text"
           placeholder="Buscar por cliente o nro. factura..."
           value={busqueda}
           onChange={e => { setBusqueda(e.target.value); setVisibleCount(15) }}
-          style={{ width: '300px' }}
+          className="buscador-trabajos"
         />
         <div className="filtro-estado-tabs" role="group" aria-label="Filtrar por estado">
           {['', 'Pendiente', 'Entregado', 'Cobrado'].map(opcion => (

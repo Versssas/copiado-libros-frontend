@@ -166,6 +166,15 @@ input:focus, select:focus {
   font-weight: 500;
 }
 
+.buscador-trabajos {
+  width: 300px;
+  max-width: 100%;
+}
+
+.filtro-estado-tabs {
+  flex-wrap: wrap;
+}
+
 .estado-inicial-label {
   display: flex;
   flex-direction: column;
@@ -487,6 +496,20 @@ body.dark button.eliminar:hover {
     gap: 8px;
   }
 
+  nav h1 {
+    font-size: 15px;
+    text-align: center;
+  }
+
+  nav .nav-buttons {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  nav button {
+    padding: 8px 10px;
+  }
+
   main {
     padding: 16px;
   }
@@ -499,13 +522,32 @@ body.dark button.eliminar:hover {
     flex-direction: column;
   }
 
+  .form-row input, .form-row select {
+    width: 100%;
+  }
+
   input, select {
     width: 100%;
+  }
+
+  .buscador-trabajos {
+    width: 100%;
+  }
+
+  .filtro-estado-tabs {
+    width: 100%;
+  }
+
+  .filtro-estado-tabs button {
+    flex: 1;
+    padding: 8px 6px;
+    font-size: 13px;
   }
 
   table {
     display: block;
     overflow-x: auto;
+    white-space: nowrap;
   }
 
   footer {
