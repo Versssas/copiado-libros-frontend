@@ -23,7 +23,7 @@ export async function generarFacturaPDF(datos) {
     doc.setFont('helvetica', 'normal')
     doc.text('Estrada 1248, Pergamino', 15, 32)
     doc.text('Buenos Aires, Argentina', 15, 38)
-    doc.text('CUIT: 20-14345554-9', 15, 44)
+    doc.text('CUIT: 20-46351706-2', 15, 44)
     doc.text('IVA Responsable Inscripto', 15, 50)
 
     // Recuadro central con letra
@@ -105,7 +105,7 @@ export async function generarFacturaPDF(datos) {
     const qrData = `https://www.afip.gob.ar/fe/qr/?p=${btoa(JSON.stringify({
         ver: 1,
         fecha: fecha,
-        cuit: 20143455549,
+        cuit: 20463517062,
         ptoVta: 5,
         tipoCmp: tipo,
         nroCmp: nro_comprobante,
