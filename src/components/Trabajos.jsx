@@ -18,7 +18,7 @@ function Trabajos({ trabajos, clientes, recargar, mostrarToast }) {
     fecha_entrega: '',
     hojas: '',
     precio_hoja: localStorage.getItem('ultimo_precio') || '',
-    estado: 'Pendiente',
+    estado: 'Entregado',
     iva: false
   })
   const [editando, setEditando] = useState(null)
@@ -169,7 +169,7 @@ const confirmarFactura = async () => {
     try {
       await axios.post(`${API}/trabajos/`, { ...form, total, total_con_iva }, getConfig())
       localStorage.setItem('ultimo_precio', form.precio_hoja)
-      setForm({ cliente_id: '', nro_factura: '', fecha: hoy(), fecha_entrega: '', hojas: '', precio_hoja: localStorage.getItem('ultimo_precio') || '', estado: 'Pendiente', iva: false })
+      setForm({ cliente_id: '', nro_factura: '', fecha: hoy(), fecha_entrega: '', hojas: '', precio_hoja: localStorage.getItem('ultimo_precio') || '', estado: 'Entregado', iva: false })
       setMostrarForm(false)
       recargar()
     } catch (error) {
@@ -260,7 +260,7 @@ const confirmarFactura = async () => {
           className="buscador-trabajos"
         />
         <div className="filtro-estado-tabs" role="group" aria-label="Filtrar por estado">
-          {['', 'Pendiente', 'Entregado', 'Cobrado'].map(opcion => (
+          {['', 'Entregado', 'Cobrado'].map(opcion => (
             <button
               key={opcion || 'todos'}
               type="button"
@@ -294,7 +294,6 @@ const confirmarFactura = async () => {
             <label className="estado-inicial-label">
               Estado inicial
               <select name="estado" value={form.estado} onChange={handleChange}>
-                <option>Pendiente</option>
                 <option>Entregado</option>
                 <option>Cobrado</option>
               </select>
@@ -439,8 +438,6 @@ const confirmarFactura = async () => {
 
                 <label>Estado</label>
                 <select name="estado" value={formEditar.estado} onChange={handleChangeEditar}>
-                    <option>Pendiente</option>
-                
                     <option>Entregado</option>
                     <option>Cobrado</option>
                 </select>
