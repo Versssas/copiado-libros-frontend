@@ -8,11 +8,13 @@ const getConfig = () => ({
     headers: { authorization: localStorage.getItem('token') }
 })
 
+const hoy = () => new Date().toISOString().slice(0, 10)
+
 function Trabajos({ trabajos, clientes, recargar, mostrarToast }) {
   const [form, setForm] = useState({
     cliente_id: '',
     nro_factura: '',
-    fecha: '', 
+    fecha: hoy(),
     fecha_entrega: '',
     hojas: '',
     precio_hoja: localStorage.getItem('ultimo_precio') || '',
@@ -167,7 +169,7 @@ const confirmarFactura = async () => {
     try {
       await axios.post(`${API}/trabajos/`, { ...form, total, total_con_iva }, getConfig())
       localStorage.setItem('ultimo_precio', form.precio_hoja)
-      setForm({ cliente_id: '', nro_factura: '', fecha: '', fecha_entrega: '', hojas: '', precio_hoja: localStorage.getItem('ultimo_precio') || '', estado: 'Pendiente', iva: false })
+      setForm({ cliente_id: '', nro_factura: '', fecha: hoy(), fecha_entrega: '', hojas: '', precio_hoja: localStorage.getItem('ultimo_precio') || '', estado: 'Pendiente', iva: false })
       setMostrarForm(false)
       recargar()
     } catch (error) {
@@ -286,7 +288,6 @@ const confirmarFactura = async () => {
               ))}
             </select>
             <input type="text" name="nro_factura" placeholder="Nro. Factura" value={form.nro_factura} onChange={handleChange} style={{width: '100px'}} />
-            <input type="date" name="fecha" value={form.fecha} onChange={handleChange} />
             <input type="date" name="fecha_entrega" value={form.fecha_entrega} onChange={handleChange} />
             <input type="number" name="hojas" placeholder="Hojas" value={form.hojas} onChange={handleChange} />
             <input type="number" name="precio_hoja" placeholder="Precio" value={form.precio_hoja} onChange={handleChange} />
@@ -322,9 +323,6 @@ const confirmarFactura = async () => {
             <th onClick={() => ordenar('cliente_nombre')} style={{ cursor: 'pointer' }}>
               Cliente {orden.campo === 'cliente_nombre' ? (orden.direccion === 'asc' ? '↑' : '↓') : '↕'}
             </th>
-            <th onClick={() => ordenar('fecha')} style={{ cursor: 'pointer' }}>
-              Fecha {orden.campo === 'fecha' ? (orden.direccion === 'asc' ? '↑' : '↓') : '↕'}
-            </th>
             <th onClick={() => ordenar('fecha_entrega')} style={{ cursor: 'pointer' }}>
               F. Entrega {orden.campo === 'fecha_entrega' ? (orden.direccion === 'asc' ? '↑' : '↓') : '↕'}
             </th>
@@ -359,7 +357,6 @@ const confirmarFactura = async () => {
             )}
         </td>
         <td>{t.cliente_nombre}</td>
-        <td>{formatearFecha(t.fecha)}</td>
         <td>{formatearFecha(t.fecha_entrega)}</td>
         <td>{t.hojas}</td>
         <td>{formatearDinero(t.precio_hoja)}</td>
