@@ -487,7 +487,7 @@ const confirmarFactura = async () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
                     <div>
                         <p style={{ fontWeight: 600 }}>Copiado de Libros Pergamino</p>
-                        <p style={{ fontSize: '13px', color: '#888' }}>CUIT: 20-14345554-9</p>
+                        <p style={{ fontSize: '13px', color: '#888' }}>CUIT: 20-46351706-2</p>
                         <p style={{ fontSize: '13px', color: '#888' }}>Estrada 1248, Pergamino</p>
                     </div>
                     <div style={{ textAlign: 'center', border: '2px solid #9b1c1c', borderRadius: '8px', padding: '8px 16px' }}>
