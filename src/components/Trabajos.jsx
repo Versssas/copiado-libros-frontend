@@ -35,6 +35,7 @@ function Trabajos({ trabajos, clientes, recargar, mostrarToast }) {
   const [filtroEstado, setFiltroEstado] = useState('')
   const [previewFactura, setPreviewFactura] = useState(null)
   const [visibleCount, setVisibleCount] = useState(15)
+  const [mostrarForm, setMostrarForm] = useState(false)
   
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -167,6 +168,7 @@ const confirmarFactura = async () => {
       await axios.post(`${API}/trabajos/`, { ...form, total, total_con_iva }, getConfig())
       localStorage.setItem('ultimo_precio', form.precio_hoja)
       setForm({ cliente_id: '', nro_factura: '', fecha: '', fecha_entrega: '', hojas: '', precio_hoja: localStorage.getItem('ultimo_precio') || '', estado: 'Pendiente', iva: false })
+      setMostrarForm(false)
       recargar()
     } catch (error) {
       mostrarToast(error.response?.data?.error || 'Error al guardar el trabajo')
@@ -267,42 +269,50 @@ const confirmarFactura = async () => {
             </button>
           ))}
         </div>
+        {!mostrarForm && (
+          <button type="button" className="agregar" onClick={() => setMostrarForm(true)}>
+            + Nuevo trabajo
+          </button>
+        )}
       </div>
 
-      <div className="form-card">
-        <div className="form-row">
-          <select name="cliente_id" value={form.cliente_id} onChange={handleChange}>
-            <option value="">Seleccionar cliente</option>
-            {clientes.map(c => (
-              <option key={c.id} value={c.id}>{c.nombre}</option>
-            ))}
-          </select>
-          <input type="text" name="nro_factura" placeholder="Nro. Factura" value={form.nro_factura} onChange={handleChange} style={{width: '100px'}} />
-          <input type="date" name="fecha" value={form.fecha} onChange={handleChange} />
-          <input type="date" name="fecha_entrega" value={form.fecha_entrega} onChange={handleChange} />
-          <input type="number" name="hojas" placeholder="Hojas" value={form.hojas} onChange={handleChange} />
-          <input type="number" name="precio_hoja" placeholder="Precio" value={form.precio_hoja} onChange={handleChange} />
-          <label className="estado-inicial-label">
-            Estado inicial
-            <select name="estado" value={form.estado} onChange={handleChange}>
-              <option>Pendiente</option>
-              <option>Entregado</option>
-              <option>Cobrado</option>
+      {mostrarForm && (
+        <div className="form-card">
+          <div className="form-row">
+            <select name="cliente_id" value={form.cliente_id} onChange={handleChange}>
+              <option value="">Seleccionar cliente</option>
+              {clientes.map(c => (
+                <option key={c.id} value={c.id}>{c.nombre}</option>
+              ))}
             </select>
-          </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <input
-              type="checkbox"
-              checked={form.iva === true}
-              onChange={e => setForm({ ...form, iva: e.target.checked })}
-            />
-            IVA 21%
-          </label>
+            <input type="text" name="nro_factura" placeholder="Nro. Factura" value={form.nro_factura} onChange={handleChange} style={{width: '100px'}} />
+            <input type="date" name="fecha" value={form.fecha} onChange={handleChange} />
+            <input type="date" name="fecha_entrega" value={form.fecha_entrega} onChange={handleChange} />
+            <input type="number" name="hojas" placeholder="Hojas" value={form.hojas} onChange={handleChange} />
+            <input type="number" name="precio_hoja" placeholder="Precio" value={form.precio_hoja} onChange={handleChange} />
+            <label className="estado-inicial-label">
+              Estado inicial
+              <select name="estado" value={form.estado} onChange={handleChange}>
+                <option>Pendiente</option>
+                <option>Entregado</option>
+                <option>Cobrado</option>
+              </select>
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <input
+                type="checkbox"
+                checked={form.iva === true}
+                onChange={e => setForm({ ...form, iva: e.target.checked })}
+              />
+              IVA 21%
+            </label>
+          </div>
+          <div style={{display : 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '12px' }}>
+            <button type="button" className="cancelar" onClick={() => setMostrarForm(false)}>Cancelar</button>
+            <button type="button" className="agregar" onClick={agregarTrabajo}>Agregar</button>
+          </div>
         </div>
-        <div style={{display : 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
-        <button type="button" className="agregar" onClick={agregarTrabajo}>Agregar</button>
-      </div>
-      </div>
+      )}
     {editando && <div className="editing-overlay" onClick={() => setEditando(null)} />}
     <div className="table-container">
       <table>

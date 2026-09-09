@@ -201,6 +201,31 @@ button.agregar:hover {
   background: #7f1515;
 }
 
+button.cancelar {
+  background: transparent;
+  color: #55556a;
+  border: 1.5px solid #e0e0ea;
+  padding: 9px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+
+button.cancelar:hover {
+  background: #f0f0f5;
+}
+
+body.dark button.cancelar {
+  color: #b0b0c0;
+  border-color: #3a3d4a;
+}
+
+body.dark button.cancelar:hover {
+  background: #2a2d3a;
+}
+
 button.editar {
   background: #9b1c1c;
   color: white;
