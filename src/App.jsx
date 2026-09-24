@@ -22,6 +22,7 @@ function App() {
   })
   const [trabajos, setTrabajos] = useState([])
   const [clientes, setClientes] = useState([])
+  const [estudios, setEstudios] = useState([])
   const [cargando, setCargando] = useState(true)
 
   useEffect(() => {
@@ -41,12 +42,14 @@ function App() {
   const cargarDatos = async () => {
     setCargando(true)
     try {
-        const [resTrabajos, resClientes] = await Promise.all([
+        const [resTrabajos, resClientes, resEstudios] = await Promise.all([
             axios.get(`${API}/trabajos/`, getConfig()),
-            axios.get(`${API}/clientes/`, getConfig())
+            axios.get(`${API}/clientes/`, getConfig()),
+            axios.get(`${API}/estudios/`, getConfig())
         ])
         setTrabajos(resTrabajos.data)
         setClientes(resClientes.data)
+        setEstudios(resEstudios.data)
     } catch (error) {
         if (error.response?.status === 401) {
             localStorage.removeItem('token')
@@ -121,7 +124,7 @@ function App() {
 
       <main>
         {pagina === 'trabajos' && <Trabajos trabajos={trabajos} clientes={clientes} recargar={cargarDatos} mostrarToast={mostrarToast} />}
-{pagina === 'clientes' && <Clientes clientes={clientes} recargar={cargarDatos} mostrarToast={mostrarToast} />}{pagina === 'estadisticas' && <Estadisticas trabajos={trabajos} />}
+{pagina === 'clientes' && <Clientes clientes={clientes} estudios={estudios} recargar={cargarDatos} mostrarToast={mostrarToast} />}{pagina === 'estadisticas' && <Estadisticas trabajos={trabajos} />}
       </main>
 
       <footer style={{
