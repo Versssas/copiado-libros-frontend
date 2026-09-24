@@ -23,6 +23,17 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
   const [editando, setEditando] = useState(null)
   const [formEditar, setFormEditar] = useState({ nombre: '', cuit: '', telefono: '', condicion_iva: 1, estudio_contable_id: '' })
   const [busqueda, setBusqueda] = useState('')
+  const [filtroEstudio, setFiltroEstudio] = useState('')
+  const [orden, setOrden] = useState({ campo: 'nombre', direccion: 'asc' })
+
+  const ordenar = (campo) => {
+    setOrden(prev => ({
+      campo,
+      direccion: prev.campo === campo && prev.direccion === 'asc' ? 'desc' : 'asc'
+    }))
+  }
+
+  const flechaOrden = (campo) => orden.campo === campo ? (orden.direccion === 'asc' ? '↑' : '↓') : '↕'
 
   const agregarEstudio = async () => {
     const nombreEstudio = prompt('Nombre del nuevo estudio contable:')
@@ -102,23 +113,52 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
     setFormEditar({ ...formEditar, [e.target.name]: e.target.value })
   }
 
-  const clientesFiltrados = clientes.filter(c => {
-    const texto = busqueda.trim().toLowerCase()
-    if (!texto) return true
-    return c.nombre.toLowerCase().includes(texto) || (c.cuit || '').includes(texto)
-  })
+  const clientesFiltrados = clientes
+    .filter(c => {
+      const texto = busqueda.trim().toLowerCase()
+      const pasaTexto = !texto || c.nombre.toLowerCase().includes(texto) || (c.cuit || '').includes(texto)
+      const pasaEstudio = filtroEstudio === ''
+        ? true
+        : filtroEstudio === 'sin'
+          ? !c.estudio_contable_id
+          : c.estudio_contable_id === Number(filtroEstudio)
+      return pasaTexto && pasaEstudio
+    })
+    .sort((a, b) => {
+      let valA, valB
+      if (orden.campo === 'estudio_contable_nombre') {
+        valA = a.estudio_contable_nombre || ''
+        valB = b.estudio_contable_nombre || ''
+      } else if (orden.campo === 'condicion_iva') {
+        valA = condicionesIva[a.condicion_iva] || ''
+        valB = condicionesIva[b.condicion_iva] || ''
+      } else {
+        valA = a[orden.campo] || ''
+        valB = b[orden.campo] || ''
+      }
+      const cmp = String(valA).localeCompare(String(valB), 'es', { numeric: true, sensitivity: 'base' })
+      return orden.direccion === 'asc' ? cmp : -cmp
+    })
 
   return (
     <div>
       <h2>Clientes</h2>
-      <input
-        type="text"
-        placeholder="Buscar por nombre o CUIT..."
-        value={busqueda}
-        onChange={e => setBusqueda(e.target.value)}
-        className="buscador-trabajos"
-        style={{ marginBottom: '16px' }}
-      />
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '16px', flexWrap: 'wrap' }}>
+        <input
+          type="text"
+          placeholder="Buscar por nombre o CUIT..."
+          value={busqueda}
+          onChange={e => setBusqueda(e.target.value)}
+          className="buscador-trabajos"
+        />
+        <select value={filtroEstudio} onChange={e => setFiltroEstudio(e.target.value)}>
+          <option value="">Todos los estudios</option>
+          <option value="sin">Sin estudio contable</option>
+          {estudios.map(e => (
+            <option key={e.id} value={e.id}>{e.nombre}</option>
+          ))}
+        </select>
+      </div>
       <div className="form-row">
         <input placeholder="Nombre" value={nombre} onChange={e => setNombre(e.target.value)} />
         <input placeholder="CUIT (opcional)" value={cuit} onChange={e => setCuit(e.target.value)} />
@@ -143,11 +183,11 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
         <table>
           <thead>
             <tr>
-              <th>Nombre</th>
-              <th>CUIT</th>
-              <th>Teléfono</th>
-              <th>Condición IVA</th>
-              <th>Estudio Contable</th>
+              <th onClick={() => ordenar('nombre')} style={{ cursor: 'pointer' }}>Nombre {flechaOrden('nombre')}</th>
+              <th onClick={() => ordenar('estudio_contable_nombre')} style={{ cursor: 'pointer' }}>Estudio Contable {flechaOrden('estudio_contable_nombre')}</th>
+              <th onClick={() => ordenar('cuit')} style={{ cursor: 'pointer' }}>CUIT {flechaOrden('cuit')}</th>
+              <th onClick={() => ordenar('telefono')} style={{ cursor: 'pointer' }}>Teléfono {flechaOrden('telefono')}</th>
+              <th onClick={() => ordenar('condicion_iva')} style={{ cursor: 'pointer' }}>Condición IVA {flechaOrden('condicion_iva')}</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -157,6 +197,14 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
                 {editando === c.id ? (
                   <>
                     <td><input name="nombre" value={formEditar.nombre} onChange={handleChangeEditar} /></td>
+                    <td>
+                      <select name="estudio_contable_id" value={formEditar.estudio_contable_id} onChange={handleChangeEditar}>
+                        <option value="">Sin estudio contable</option>
+                        {estudios.map(e => (
+                          <option key={e.id} value={e.id}>{e.nombre}</option>
+                        ))}
+                      </select>
+                    </td>
                     <td><input name="cuit" value={formEditar.cuit} onChange={handleChangeEditar} /></td>
                     <td><input name="telefono" value={formEditar.telefono} onChange={handleChangeEditar} /></td>
                     <td>
@@ -169,14 +217,6 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
                       </select>
                     </td>
                     <td>
-                      <select name="estudio_contable_id" value={formEditar.estudio_contable_id} onChange={handleChangeEditar}>
-                        <option value="">Sin estudio contable</option>
-                        {estudios.map(e => (
-                          <option key={e.id} value={e.id}>{e.nombre}</option>
-                        ))}
-                      </select>
-                    </td>
-                    <td>
                       <button type="button" className="editar" onClick={guardarEdicion}>Guardar</button>
                       <button type="button" className="eliminar" onClick={() => setEditando(null)}>Cancelar</button>
                     </td>
@@ -184,10 +224,10 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
                 ) : (
                   <>
                     <td>{c.nombre}</td>
+                    <td>{c.estudio_contable_nombre || '—'}</td>
                     <td>{c.cuit}</td>
                     <td>{c.telefono}</td>
                     <td>{condicionesIva[c.condicion_iva] || 'Resp. Inscripto'}</td>
-                    <td>{c.estudio_contable_nombre || '—'}</td>
                     <td>
                       <button type="button" className="editar" onClick={() => empezarEdicion(c)}>Editar</button>
                       <button type="button" className="eliminar" onClick={() => eliminarCliente(c.id)}>Eliminar</button>
