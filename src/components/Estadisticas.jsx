@@ -32,6 +32,18 @@ function Estadisticas({ trabajos }) {
     .filter(t => t.estado !== 'Cobrado')
     .reduce((acc, t) => acc + Number(t.total), 0)
 
+  const porEstudio = trabajos.reduce((acc, t) => {
+    const nombre = t.estudio_contable_nombre || 'Sin estudio contable'
+    if (!acc[nombre]) acc[nombre] = { cantidad: 0, cobrado: 0, pendiente: 0 }
+    acc[nombre].cantidad += 1
+    if (t.estado === 'Cobrado') {
+      acc[nombre].cobrado += Number(t.total)
+    } else {
+      acc[nombre].pendiente += Number(t.total)
+    }
+    return acc
+  }, {})
+
   const porCliente = trabajos.reduce((acc, t) => {
     const nombre = t.cliente_nombre
     if (!acc[nombre]) acc[nombre] = { cantidad: 0, cobrado: 0, pendiente: 0 }
@@ -120,6 +132,28 @@ function Estadisticas({ trabajos }) {
                 <td>{datos.cantidad}</td>
                 <td>{datos.hojas}</td>
                 <td>{formatearDinero(datos.total)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <h3 className="subtitulo">Trabajos por Estudio</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Estudio Contable</th>
+              <th>Cantidad de trabajos</th>
+              <th>Cobrado</th>
+              <th>A Cobrar</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.entries(porEstudio).map(([nombre, datos]) => (
+              <tr key={nombre}>
+                <td>{nombre}</td>
+                <td>{datos.cantidad}</td>
+                <td>{formatearDinero(datos.cobrado)}</td>
+                <td>{formatearDinero(datos.pendiente)}</td>
               </tr>
             ))}
           </tbody>
