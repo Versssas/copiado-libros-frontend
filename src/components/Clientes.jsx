@@ -21,6 +21,7 @@ function Clientes({ clientes, recargar, mostrarToast }) {
   const [condicionIva, setCondicionIva] = useState(1)
   const [editando, setEditando] = useState(null)
   const [formEditar, setFormEditar] = useState({ nombre: '', cuit: '', telefono: '', condicion_iva: 1 })
+  const [busqueda, setBusqueda] = useState('')
 
   const agregarCliente = async () => {
     if (!nombre || !cuit) {
@@ -72,9 +73,23 @@ function Clientes({ clientes, recargar, mostrarToast }) {
     setFormEditar({ ...formEditar, [e.target.name]: e.target.value })
   }
 
+  const clientesFiltrados = clientes.filter(c => {
+    const texto = busqueda.trim().toLowerCase()
+    if (!texto) return true
+    return c.nombre.toLowerCase().includes(texto) || c.cuit.includes(texto)
+  })
+
   return (
     <div>
       <h2>Clientes</h2>
+      <input
+        type="text"
+        placeholder="Buscar por nombre o CUIT..."
+        value={busqueda}
+        onChange={e => setBusqueda(e.target.value)}
+        className="buscador-trabajos"
+        style={{ marginBottom: '16px' }}
+      />
       <div className="form-row">
         <input placeholder="Nombre" value={nombre} onChange={e => setNombre(e.target.value)} />
         <input placeholder="CUIT" value={cuit} onChange={e => setCuit(e.target.value)} />
@@ -100,7 +115,7 @@ function Clientes({ clientes, recargar, mostrarToast }) {
             </tr>
           </thead>
           <tbody>
-            {clientes.map(c => (
+            {clientesFiltrados.map(c => (
               <tr key={c.id}>
                 {editando === c.id ? (
                   <>
