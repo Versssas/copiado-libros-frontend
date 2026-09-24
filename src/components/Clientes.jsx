@@ -25,6 +25,9 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
   const [busqueda, setBusqueda] = useState('')
   const [filtroEstudio, setFiltroEstudio] = useState('')
   const [orden, setOrden] = useState({ campo: 'nombre', direccion: 'asc' })
+  const [mostrarEstudios, setMostrarEstudios] = useState(false)
+  const [editandoEstudio, setEditandoEstudio] = useState(null)
+  const [nombreEstudioEditado, setNombreEstudioEditado] = useState('')
 
   const ordenar = (campo) => {
     setOrden(prev => ({
@@ -45,6 +48,37 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
       mostrarToast('Estudio agregado correctamente')
     } catch (error) {
       mostrarToast(error.response?.data?.error || 'Error al agregar el estudio', 'error')
+    }
+  }
+
+  const empezarEdicionEstudio = (estudio) => {
+    setEditandoEstudio(estudio.id)
+    setNombreEstudioEditado(estudio.nombre)
+  }
+
+  const guardarEdicionEstudio = async (id) => {
+    if (!nombreEstudioEditado.trim()) {
+      mostrarToast('El nombre del estudio no puede estar vacío', 'error')
+      return
+    }
+    try {
+      await axios.put(`${API}/estudios/${id}`, { nombre: nombreEstudioEditado.trim() }, getConfig())
+      setEditandoEstudio(null)
+      recargar()
+      mostrarToast('Estudio actualizado correctamente')
+    } catch (error) {
+      mostrarToast(error.response?.data?.error || 'Error al actualizar el estudio', 'error')
+    }
+  }
+
+  const eliminarEstudio = async (id) => {
+    if (!confirm('¿Seguro que querés eliminar este estudio? Los clientes asociados quedarán sin estudio.')) return
+    try {
+      await axios.delete(`${API}/estudios/${id}`, getConfig())
+      recargar()
+      mostrarToast('Estudio eliminado')
+    } catch (error) {
+      mostrarToast(error.response?.data?.error || 'Error al eliminar el estudio', 'error')
     }
   }
 
@@ -177,8 +211,37 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
           ))}
         </select>
         <button type="button" className="cancelar" onClick={agregarEstudio}>+ Estudio</button>
+        <button type="button" className="cancelar" onClick={() => setMostrarEstudios(!mostrarEstudios)}>
+          {mostrarEstudios ? 'Ocultar estudios' : 'Gestionar estudios'}
+        </button>
         <button type="button" className="agregar" onClick={agregarCliente}>Agregar</button>
       </div>
+      {mostrarEstudios && (
+        <div className="form-card" style={{ marginBottom: '16px' }}>
+          {estudios.length === 0 && <p style={{ color: '#888' }}>No hay estudios contables cargados.</p>}
+          {estudios.map(e => (
+            <div key={e.id} style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '8px' }}>
+              {editandoEstudio === e.id ? (
+                <>
+                  <input
+                    value={nombreEstudioEditado}
+                    onChange={ev => setNombreEstudioEditado(ev.target.value)}
+                    style={{ flex: 1 }}
+                  />
+                  <button type="button" className="editar" onClick={() => guardarEdicionEstudio(e.id)}>Guardar</button>
+                  <button type="button" className="eliminar" onClick={() => setEditandoEstudio(null)}>Cancelar</button>
+                </>
+              ) : (
+                <>
+                  <span style={{ flex: 1 }}>{e.nombre}</span>
+                  <button type="button" className="editar" onClick={() => empezarEdicionEstudio(e)}>Editar</button>
+                  <button type="button" className="eliminar" onClick={() => eliminarEstudio(e.id)}>Eliminar</button>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
       <div className="table-container">
         <table>
           <thead>
