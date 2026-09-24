@@ -23,9 +23,18 @@ function Clientes({ clientes, recargar, mostrarToast }) {
   const [formEditar, setFormEditar] = useState({ nombre: '', cuit: '', telefono: '', condicion_iva: 1 })
   const [busqueda, setBusqueda] = useState('')
 
+  const cuitValido = (valor) => {
+    const limpio = (valor || '').replace(/[-\s]/g, '')
+    return !limpio || /^\d{11}$/.test(limpio)
+  }
+
   const agregarCliente = async () => {
-    if (!nombre || !cuit) {
-      mostrarToast('Completá todos los campos', 'error')
+    if (!nombre) {
+      mostrarToast('Completá el nombre', 'error')
+      return
+    }
+    if (!cuitValido(cuit)) {
+      mostrarToast('El CUIT debe tener 11 números', 'error')
       return
     }
     try {
@@ -63,6 +72,10 @@ function Clientes({ clientes, recargar, mostrarToast }) {
   }
 
   const guardarEdicion = async () => {
+    if (!cuitValido(formEditar.cuit)) {
+      mostrarToast('El CUIT debe tener 11 números', 'error')
+      return
+    }
     await axios.put(`${API}/clientes/${editando}`, formEditar, getConfig())
     setEditando(null)
     recargar()
@@ -76,7 +89,7 @@ function Clientes({ clientes, recargar, mostrarToast }) {
   const clientesFiltrados = clientes.filter(c => {
     const texto = busqueda.trim().toLowerCase()
     if (!texto) return true
-    return c.nombre.toLowerCase().includes(texto) || c.cuit.includes(texto)
+    return c.nombre.toLowerCase().includes(texto) || (c.cuit || '').includes(texto)
   })
 
   return (
@@ -92,7 +105,7 @@ function Clientes({ clientes, recargar, mostrarToast }) {
       />
       <div className="form-row">
         <input placeholder="Nombre" value={nombre} onChange={e => setNombre(e.target.value)} />
-        <input placeholder="CUIT" value={cuit} onChange={e => setCuit(e.target.value)} />
+        <input placeholder="CUIT (opcional)" value={cuit} onChange={e => setCuit(e.target.value)} />
         <input placeholder="Teléfono" value={telefono} onChange={e => setTelefono(e.target.value)} />
         <select value={condicionIva} onChange={e => setCondicionIva(Number(e.target.value))}>
           <option value={1}>Resp. Inscripto</option>
