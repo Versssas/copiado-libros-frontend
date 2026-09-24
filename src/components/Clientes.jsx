@@ -23,7 +23,6 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
   const [editando, setEditando] = useState(null)
   const [formEditar, setFormEditar] = useState({ nombre: '', cuit: '', telefono: '', condicion_iva: 1, estudio_contable_id: '' })
   const [busqueda, setBusqueda] = useState('')
-  const [carpetaAbierta, setCarpetaAbierta] = useState(null) // null = vista de carpetas; 'sin' o id de estudio
 
   const agregarEstudio = async () => {
     const nombreEstudio = prompt('Nombre del nuevo estudio contable:')
@@ -103,62 +102,15 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
     setFormEditar({ ...formEditar, [e.target.name]: e.target.value })
   }
 
-  const clientesDeCarpeta = clientes.filter(c =>
-    carpetaAbierta === 'sin' ? !c.estudio_contable_id : c.estudio_contable_id === carpetaAbierta
-  )
-
-  const clientesFiltrados = clientesDeCarpeta.filter(c => {
+  const clientesFiltrados = clientes.filter(c => {
     const texto = busqueda.trim().toLowerCase()
     if (!texto) return true
     return c.nombre.toLowerCase().includes(texto) || (c.cuit || '').includes(texto)
   })
 
-  const abrirCarpeta = (id) => {
-    setCarpetaAbierta(id)
-    setEstudioId(id === 'sin' ? '' : id)
-    setBusqueda('')
-  }
-
-  const clientesSinEstudio = clientes.filter(c => !c.estudio_contable_id).length
-
-  if (carpetaAbierta === null) {
-    return (
-      <div>
-        <h2>Clientes por Estudio Contable</h2>
-        <div className="carpetas-grid">
-          {estudios.map(e => (
-            <button key={e.id} type="button" className="carpeta" onClick={() => abrirCarpeta(e.id)}>
-              <span className="carpeta-icono">📁</span>
-              <span className="carpeta-nombre">{e.nombre}</span>
-              <span className="carpeta-cantidad">
-                {clientes.filter(c => c.estudio_contable_id === e.id).length} clientes
-              </span>
-            </button>
-          ))}
-          <button type="button" className="carpeta" onClick={() => abrirCarpeta('sin')}>
-            <span className="carpeta-icono">📁</span>
-            <span className="carpeta-nombre">Sin estudio contable</span>
-            <span className="carpeta-cantidad">{clientesSinEstudio} clientes</span>
-          </button>
-          <button type="button" className="carpeta carpeta-nueva" onClick={agregarEstudio}>
-            <span className="carpeta-icono">+</span>
-            <span className="carpeta-nombre">Nuevo estudio</span>
-          </button>
-        </div>
-      </div>
-    )
-  }
-
-  const nombreCarpeta = carpetaAbierta === 'sin'
-    ? 'Sin estudio contable'
-    : estudios.find(e => e.id === carpetaAbierta)?.nombre || ''
-
   return (
     <div>
-      <button type="button" className="cancelar" onClick={() => setCarpetaAbierta(null)} style={{ marginBottom: '16px' }}>
-        ← Volver a estudios
-      </button>
-      <h2>{nombreCarpeta}</h2>
+      <h2>Clientes</h2>
       <input
         type="text"
         placeholder="Buscar por nombre o CUIT..."
@@ -184,6 +136,7 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
             <option key={e.id} value={e.id}>{e.nombre}</option>
           ))}
         </select>
+        <button type="button" className="cancelar" onClick={agregarEstudio}>+ Estudio</button>
         <button type="button" className="agregar" onClick={agregarCliente}>Agregar</button>
       </div>
       <div className="table-container">
@@ -194,6 +147,7 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
               <th>CUIT</th>
               <th>Teléfono</th>
               <th>Condición IVA</th>
+              <th>Estudio Contable</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -215,12 +169,14 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
                       </select>
                     </td>
                     <td>
-                      <select name="estudio_contable_id" value={formEditar.estudio_contable_id} onChange={handleChangeEditar} title="Mover a otro estudio">
+                      <select name="estudio_contable_id" value={formEditar.estudio_contable_id} onChange={handleChangeEditar}>
                         <option value="">Sin estudio contable</option>
                         {estudios.map(e => (
                           <option key={e.id} value={e.id}>{e.nombre}</option>
                         ))}
                       </select>
+                    </td>
+                    <td>
                       <button type="button" className="editar" onClick={guardarEdicion}>Guardar</button>
                       <button type="button" className="eliminar" onClick={() => setEditando(null)}>Cancelar</button>
                     </td>

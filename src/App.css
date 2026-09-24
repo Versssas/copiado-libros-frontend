@@ -360,64 +360,6 @@ tr:hover td {
   margin-bottom: 32px;
 }
 
-.carpetas-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 16px;
-}
-
-.carpeta {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  background: white;
-  border: 1.5px solid #e0e0ea;
-  border-radius: 12px;
-  padding: 24px 16px;
-  cursor: pointer;
-  transition: border-color 0.15s, transform 0.15s;
-  text-align: center;
-}
-
-.carpeta:hover {
-  border-color: #9b1c1c;
-  transform: translateY(-2px);
-}
-
-.carpeta-icono {
-  font-size: 32px;
-}
-
-.carpeta-nombre {
-  font-weight: 600;
-  font-size: 14px;
-  color: #1a1a2e;
-}
-
-.carpeta-cantidad {
-  font-size: 12px;
-  color: #888;
-}
-
-.carpeta-nueva {
-  border-style: dashed;
-  color: #9b1c1c;
-}
-
-.carpeta-nueva .carpeta-icono {
-  color: #9b1c1c;
-}
-
-body.dark .carpeta {
-  background: #1e2029;
-  border-color: #2a2d3a;
-}
-
-body.dark .carpeta-nombre {
-  color: #e8e8f0;
-}
-
 .stat-card {
   flex: 1;
   padding: 24px;
