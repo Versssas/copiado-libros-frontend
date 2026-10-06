@@ -371,11 +371,17 @@ const confirmarFactura = async () => {
             </span>
         </td>
         <td>{t.iva && t.total_con_iva ? formatearDinero(t.total_con_iva) : formatearDinero(t.total)}</td>
-        <td style={{
-            textDecoration: t.estado === 'Cobrado' ? 'line-through' : 'none',
-            color: t.estado === 'Cobrado' ? 'var(--color-text-tertiary, #aaa)' : 'inherit'
-        }}>
-            {t.estado}
+        <td>
+            <span style={{
+                background: t.estado === 'Cobrado' ? '#27ae60' : '#2980b9',
+                color: 'white',
+                padding: '2px 10px',
+                borderRadius: '12px',
+                fontSize: '12px',
+                fontWeight: 500
+            }}>
+                {t.estado}
+            </span>
         </td>
         <td>
             <button type="button" className="editar" onClick={() => empezarEdicion(t)}>Editar</button>
