@@ -373,7 +373,7 @@ const confirmarFactura = async () => {
         <td data-label="Total">{t.iva && t.total_con_iva ? formatearDinero(t.total_con_iva) : formatearDinero(t.total)}</td>
         <td data-label="Estado">
             <span style={{
-                background: t.estado === 'Cobrado' ? '#27ae60' : '#2980b9',
+                background: t.estado === 'Cobrado' ? '#27ae60' : '#c9960c',
                 color: 'white',
                 padding: '2px 10px',
                 borderRadius: '12px',
