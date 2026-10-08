@@ -221,13 +221,13 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
             <option key={e.id} value={e.id}>{e.nombre}</option>
           ))}
         </select>
-        <button type="button" className="cancelar" onClick={agregarEstudio}>+ Estudio</button>
         <button type="button" className="cancelar" onClick={() => setMostrarForm(false)}>Cancelar</button>
         <button type="button" className="agregar" onClick={agregarCliente}>Agregar</button>
       </div>
       )}
       {mostrarEstudios && (
         <div className="form-card" style={{ marginBottom: '16px' }}>
+          <button type="button" className="agregar" onClick={agregarEstudio} style={{ marginBottom: '12px' }}>+ Estudio</button>
           {estudios.length === 0 && <p style={{ color: '#888' }}>No hay estudios contables cargados.</p>}
           {estudios.map(e => (
             <div key={e.id} style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '8px' }}>
