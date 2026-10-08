@@ -243,7 +243,7 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
         </div>
       )}
       <div className="table-container">
-        <table>
+        <table className="tabla-clientes">
           <thead>
             <tr>
               <th onClick={() => ordenar('nombre')} style={{ cursor: 'pointer' }}>Nombre {flechaOrden('nombre')}</th>
@@ -259,8 +259,8 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
               <tr key={c.id}>
                 {editando === c.id ? (
                   <>
-                    <td><input name="nombre" value={formEditar.nombre} onChange={handleChangeEditar} /></td>
-                    <td>
+                    <td data-label="Nombre"><input name="nombre" value={formEditar.nombre} onChange={handleChangeEditar} /></td>
+                    <td data-label="Estudio Contable">
                       <select name="estudio_contable_id" value={formEditar.estudio_contable_id} onChange={handleChangeEditar}>
                         <option value="">Sin estudio contable</option>
                         {estudios.map(e => (
@@ -268,9 +268,9 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
                         ))}
                       </select>
                     </td>
-                    <td><input name="cuit" value={formEditar.cuit} onChange={handleChangeEditar} /></td>
-                    <td><input name="telefono" value={formEditar.telefono} onChange={handleChangeEditar} /></td>
-                    <td>
+                    <td data-label="CUIT"><input name="cuit" value={formEditar.cuit} onChange={handleChangeEditar} /></td>
+                    <td data-label="Teléfono"><input name="telefono" value={formEditar.telefono} onChange={handleChangeEditar} /></td>
+                    <td data-label="Condición IVA">
                       <select name="condicion_iva" value={formEditar.condicion_iva} onChange={handleChangeEditar}>
                         <option value={1}>Resp. Inscripto</option>
                         <option value={4}>Exento</option>
@@ -279,19 +279,19 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
                         <option value={13}>Monotrib. Social</option>
                       </select>
                     </td>
-                    <td>
+                    <td data-label="Acciones">
                       <button type="button" className="editar" onClick={guardarEdicion}>Guardar</button>
                       <button type="button" className="eliminar" onClick={() => setEditando(null)}>Cancelar</button>
                     </td>
                   </>
                 ) : (
                   <>
-                    <td>{c.nombre}</td>
-                    <td>{c.estudio_contable_nombre || '—'}</td>
-                    <td>{c.cuit}</td>
-                    <td>{c.telefono}</td>
-                    <td>{condicionesIva[c.condicion_iva] || 'Resp. Inscripto'}</td>
-                    <td>
+                    <td data-label="Nombre">{c.nombre}</td>
+                    <td data-label="Estudio Contable">{c.estudio_contable_nombre || '—'}</td>
+                    <td data-label="CUIT">{c.cuit}</td>
+                    <td data-label="Teléfono">{c.telefono}</td>
+                    <td data-label="Condición IVA">{condicionesIva[c.condicion_iva] || 'Resp. Inscripto'}</td>
+                    <td data-label="Acciones">
                       <button type="button" className="editar" onClick={() => empezarEdicion(c)}>Editar</button>
                       <button type="button" className="eliminar" onClick={() => eliminarCliente(c.id)}>Eliminar</button>
                     </td>
