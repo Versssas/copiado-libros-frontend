@@ -398,6 +398,113 @@ tr:hover td {
   padding: 0;
 }
 
+/* SEGMENTED CONTROL (estilo iOS, con píldora deslizante) */
+.segmented-control {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  background: #f0f0f5;
+  border-radius: 10px;
+  padding: 4px;
+}
+
+.segmented-control .indicador {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  bottom: 4px;
+  width: calc((100% - 8px) / 4);
+  background: #9b1c1c;
+  border-radius: 7px;
+  transform: translateX(calc(var(--i, 0) * 100%));
+  transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+.segmented-control button {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+  border: none;
+  padding: 9px 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #55556a;
+  cursor: pointer;
+  border-radius: 7px;
+  transition: color 200ms ease, transform 100ms ease-out;
+}
+
+.segmented-control button.activo {
+  color: white;
+}
+
+.segmented-control button:active {
+  transform: scale(0.96);
+}
+
+body.dark .segmented-control {
+  background: #1e2029;
+}
+
+body.dark .segmented-control button {
+  color: #b0b0c0;
+}
+
+/* Contenido que se desvanece/entra suavemente al cambiar de período */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-periodo {
+  animation: fadeSlideIn 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Headers ordenables con feedback táctil y flecha animada */
+.th-ordenable {
+  cursor: pointer;
+  user-select: none;
+  transition: background 150ms ease;
+}
+
+.th-ordenable:active {
+  background: rgba(255,255,255,0.15);
+}
+
+.flecha-orden {
+  display: inline-block;
+  margin-left: 4px;
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), opacity 150ms ease;
+}
+
+/* Filas con una entrada escalonada sutil al reordenar la tabla */
+@keyframes filaEntra {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.filas-ordenadas tr {
+  animation: filaEntra 240ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .segmented-control .indicador {
+    transition: none;
+  }
+  .fade-periodo {
+    animation: none;
+  }
+  .flecha-orden {
+    transition: opacity 150ms ease;
+  }
+  .filas-ordenadas tr {
+    animation: none;
+  }
+}
+
+
 /* BÚSQUEDA */
 .search-bar {
   display: flex;

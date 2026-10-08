@@ -17,8 +17,6 @@ function TablaOrdenable({ columnas, filas }) {
     }))
   }
 
-  const flechaOrden = (campo) => orden.campo === campo ? (orden.direccion === 'asc' ? '↑' : '↓') : '↕'
-
   const columnaActiva = columnas.find(c => c.key === orden.campo)
   const filasOrdenadas = [...filas].sort((a, b) => {
     const valA = valorOrden(a, columnaActiva)
@@ -34,15 +32,22 @@ function TablaOrdenable({ columnas, filas }) {
       <thead>
         <tr>
           {columnas.map(c => (
-            <th key={c.key} onClick={() => ordenar(c.key)} style={{ cursor: 'pointer' }}>
-              {c.label} {flechaOrden(c.key)}
+            <th key={c.key} onClick={() => ordenar(c.key)} className="th-ordenable">
+              {c.label}
+              <span
+                className="flecha-orden"
+                style={{
+                  transform: `rotate(${orden.campo === c.key && orden.direccion === 'desc' ? 180 : 0}deg)`,
+                  opacity: orden.campo === c.key ? 1 : 0.35
+                }}
+              >↓</span>
             </th>
           ))}
         </tr>
       </thead>
-      <tbody>
+      <tbody key={`${orden.campo}-${orden.direccion}`} className="filas-ordenadas">
         {filasOrdenadas.map((fila, i) => (
-          <tr key={i}>
+          <tr key={i} style={{ animationDelay: `${Math.min(i, 8) * 18}ms` }}>
             {columnas.map(c => (
               <td key={c.key}>{c.format ? c.format(fila[c.key]) : fila[c.key]}</td>
             ))}
@@ -147,7 +152,13 @@ function Estadisticas({ trabajos }) {
     <div>
       <h2>Estadísticas</h2>
 
-      <div className="filtro-estado-tabs" role="group" aria-label="Filtrar por período" style={{ marginBottom: '20px' }}>
+      <div
+        className="segmented-control"
+        role="group"
+        aria-label="Filtrar por período"
+        style={{ '--i': PERIODOS.findIndex(p => p.value === periodo), marginBottom: '20px' }}
+      >
+        <div className="indicador" />
         {PERIODOS.map(p => (
           <button
             key={p.value}
@@ -160,6 +171,7 @@ function Estadisticas({ trabajos }) {
         ))}
       </div>
 
+      <div key={periodo} className="fade-periodo">
       <div className="stats-cards">
         <div className="stat-card verde">
           <h3>Total Cobrado</h3>
@@ -249,6 +261,7 @@ function Estadisticas({ trabajos }) {
           ]}
           filas={Object.values(porCliente)}
         />
+      </div>
       </div>
     </div>
   )
