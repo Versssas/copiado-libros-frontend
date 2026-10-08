@@ -28,6 +28,7 @@ function TablaOrdenable({ columnas, filas }) {
   })
 
   return (
+    <div className="tabla-scroll">
     <table>
       <thead>
         <tr>
@@ -55,6 +56,7 @@ function TablaOrdenable({ columnas, filas }) {
         ))}
       </tbody>
     </table>
+    </div>
   )
 }
 

@@ -720,9 +720,13 @@ body.dark button.eliminar:hover {
     font-size: 13px;
   }
 
-  table {
-    display: block;
+  .tabla-scroll {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 16px;
+  }
+
+  .tabla-scroll table {
     white-space: nowrap;
   }
 
