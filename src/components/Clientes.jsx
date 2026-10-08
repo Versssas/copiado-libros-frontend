@@ -28,6 +28,7 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
   const [mostrarEstudios, setMostrarEstudios] = useState(false)
   const [editandoEstudio, setEditandoEstudio] = useState(null)
   const [nombreEstudioEditado, setNombreEstudioEditado] = useState('')
+  const [mostrarForm, setMostrarForm] = useState(false)
 
   const ordenar = (campo) => {
     setOrden(prev => ({
@@ -103,6 +104,7 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
       setTelefono('')
       setCondicionIva(1)
       setEstudioId('')
+      setMostrarForm(false)
       recargar()
       mostrarToast('Cliente agregado correctamente')
     } catch (error) {
@@ -192,7 +194,16 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
             <option key={e.id} value={e.id}>{e.nombre}</option>
           ))}
         </select>
+        <button type="button" className="cancelar" onClick={() => setMostrarEstudios(!mostrarEstudios)}>
+          {mostrarEstudios ? 'Ocultar estudios' : 'Gestionar estudios'}
+        </button>
+        {!mostrarForm && (
+          <button type="button" className="agregar" onClick={() => setMostrarForm(true)}>
+            + Nuevo cliente
+          </button>
+        )}
       </div>
+      {mostrarForm && (
       <div className="form-row">
         <input placeholder="Nombre" value={nombre} onChange={e => setNombre(e.target.value)} />
         <input placeholder="CUIT (opcional)" value={cuit} onChange={e => setCuit(e.target.value)} />
@@ -211,11 +222,10 @@ function Clientes({ clientes, estudios, recargar, mostrarToast }) {
           ))}
         </select>
         <button type="button" className="cancelar" onClick={agregarEstudio}>+ Estudio</button>
-        <button type="button" className="cancelar" onClick={() => setMostrarEstudios(!mostrarEstudios)}>
-          {mostrarEstudios ? 'Ocultar estudios' : 'Gestionar estudios'}
-        </button>
+        <button type="button" className="cancelar" onClick={() => setMostrarForm(false)}>Cancelar</button>
         <button type="button" className="agregar" onClick={agregarCliente}>Agregar</button>
       </div>
+      )}
       {mostrarEstudios && (
         <div className="form-card" style={{ marginBottom: '16px' }}>
           {estudios.length === 0 && <p style={{ color: '#888' }}>No hay estudios contables cargados.</p>}
