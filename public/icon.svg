@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b23327"/>
+      <stop offset="1" stop-color="#8a1a16"/>
+    </linearGradient>
+    <linearGradient id="pageLeft" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f1ede4"/>
+    </linearGradient>
+    <linearGradient id="pageRight" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f1ede4"/>
+      <stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="512" height="512" rx="108" fill="url(#bg)"/>
+
+  <!-- soft shadow under the book -->
+  <ellipse cx="256" cy="378" rx="150" ry="14" fill="#000000" opacity="0.18"/>
+
+  <!-- open book -->
+  <g>
+    <!-- left page -->
+    <path d="M256 158 C 210 140, 150 138, 112 152 C 108 153.5, 106 157, 106 161 L 106 330 C 106 334.5, 110 337.5, 114.3 336.2 C 152 325, 208 327, 256 348 Z" fill="url(#pageLeft)"/>
+    <!-- right page -->
+    <path d="M256 158 C 302 140, 362 138, 400 152 C 404 153.5, 406 157, 406 161 L 406 330 C 406 334.5, 402 337.5, 397.7 336.2 C 360 325, 304 327, 256 348 Z" fill="url(#pageRight)"/>
+    <!-- spine -->
+    <path d="M256 158 L256 348" stroke="#c9412f" stroke-width="5" stroke-linecap="round" opacity="0.55"/>
+
+    <!-- text lines left page -->
+    <g stroke="#b23327" stroke-width="6" stroke-linecap="round" opacity="0.5">
+      <line x1="132" y1="196" x2="222" y2="208"/>
+      <line x1="130" y1="222" x2="224" y2="234"/>
+      <line x1="128" y1="248" x2="226" y2="260"/>
+      <line x1="126" y1="274" x2="228" y2="286"/>
+    </g>
+    <!-- text lines right page -->
+    <g stroke="#b23327" stroke-width="6" stroke-linecap="round" opacity="0.5">
+      <line x1="290" y1="208" x2="380" y2="196"/>
+      <line x1="288" y1="234" x2="382" y2="222"/>
+      <line x1="286" y1="260" x2="384" y2="248"/>
+      <line x1="284" y1="286" x2="386" y2="274"/>
+    </g>
+  </g>
+
+  <!-- pen nib accent -->
+  <g transform="translate(330,118) rotate(38)">
+    <path d="M0 0 L14 0 L14 86 L7 104 L0 86 Z" fill="#f4d58d"/>
+    <path d="M0 0 L14 0 L14 20 L7 26 L0 20 Z" fill="#d7a73c"/>
+    <line x1="7" y1="26" x2="7" y2="88" stroke="#8a1a16" stroke-width="2" opacity="0.5"/>
+  </g>
+</svg>
