@@ -649,7 +649,26 @@ body.dark button.eliminar:hover {
   }
 
   .stats-cards {
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .stats-cards .stat-card:nth-child(3) {
+    grid-column: span 2;
+  }
+
+  .stat-card {
+    padding: 14px 10px;
+  }
+
+  .stat-card h3 {
+    font-size: 10px;
+    margin-bottom: 6px;
+  }
+
+  .stat-card p {
+    font-size: 19px;
   }
 
   .form-row {
