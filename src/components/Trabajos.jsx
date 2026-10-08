@@ -315,7 +315,7 @@ const confirmarFactura = async () => {
       )}
     {editando && <div className="editing-overlay" onClick={() => setEditando(null)} />}
     <div className="table-container">
-      <table>
+      <table className="tabla-trabajos">
         <thead>
           <tr>
             <th>Nro. Factura</th>
@@ -340,7 +340,7 @@ const confirmarFactura = async () => {
         <tbody>
           {trabajosVisibles.map(t => (
     <tr key={t.id}>
-        <td>
+        <td data-label="Nro. Factura">
             {t.nro_factura || '-'}
             {t.anulada && (
                 <span style={{
@@ -355,11 +355,11 @@ const confirmarFactura = async () => {
                 </span>
             )}
         </td>
-        <td>{t.cliente_nombre}</td>
-        <td>{formatearFecha(t.fecha_entrega)}</td>
-        <td>{t.hojas}</td>
-        <td>{formatearDinero(t.precio_hoja)}</td>
-        <td>
+        <td data-label="Cliente">{t.cliente_nombre}</td>
+        <td data-label="F. Entrega">{formatearFecha(t.fecha_entrega)}</td>
+        <td data-label="Hojas">{t.hojas}</td>
+        <td data-label="Precio">{formatearDinero(t.precio_hoja)}</td>
+        <td data-label="IVA">
             <span style={{
                 background: t.iva ? '#27ae60' : '#ddd',
                 color: t.iva ? 'white' : '#666',
@@ -370,8 +370,8 @@ const confirmarFactura = async () => {
                 {t.iva ? 'Sí' : 'No'}
             </span>
         </td>
-        <td>{t.iva && t.total_con_iva ? formatearDinero(t.total_con_iva) : formatearDinero(t.total)}</td>
-        <td>
+        <td data-label="Total">{t.iva && t.total_con_iva ? formatearDinero(t.total_con_iva) : formatearDinero(t.total)}</td>
+        <td data-label="Estado">
             <span style={{
                 background: t.estado === 'Cobrado' ? '#27ae60' : '#2980b9',
                 color: 'white',
@@ -383,7 +383,7 @@ const confirmarFactura = async () => {
                 {t.estado}
             </span>
         </td>
-        <td>
+        <td data-label="Acciones">
             <button type="button" className="editar" onClick={() => empezarEdicion(t)}>Editar</button>
             <button type="button" className="eliminar" onClick={() => eliminarTrabajo(t.id)}>Eliminar</button>
             <select
