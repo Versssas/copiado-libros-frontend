@@ -398,6 +398,10 @@ tr:hover td {
   padding: 0;
 }
 
+.grafico-mensual {
+  height: 350px;
+}
+
 /* SEGMENTED CONTROL (estilo iOS, con píldora deslizante) */
 .segmented-control {
   position: relative;
@@ -669,6 +673,25 @@ body.dark button.eliminar:hover {
 
   .stat-card p {
     font-size: 19px;
+  }
+
+  th {
+    padding: 10px 10px;
+    font-size: 12px;
+  }
+
+  td {
+    padding: 9px 10px;
+    font-size: 13px;
+  }
+
+  .subtitulo {
+    font-size: 14px;
+    margin: 20px 0 8px 0;
+  }
+
+  .grafico-mensual {
+    height: 240px;
   }
 
   .form-row {
