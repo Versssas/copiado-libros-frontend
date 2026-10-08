@@ -203,7 +203,7 @@ function Estadisticas({ trabajos }) {
 
         <h3 className="subtitulo">Facturación por Mes</h3>
         <div style={{ width: '100%', height: 350, marginBottom: '32px', overflowX: 'auto' }}>
-          <div style={{ minWidth: Math.max(600, datosGrafico.length * 90), height: '100%' }}>
+          <div style={{ minWidth: Math.max(280, datosGrafico.length * 90), height: '100%' }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={datosGrafico} margin={{ top: 30, right: 30, left: 80, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#44444440" />
